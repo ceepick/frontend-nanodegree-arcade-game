@@ -1,3 +1,32 @@
+const SPRITE_X_OFFSET = 101;
+const SPRITE_Y_INITIAL_POSITION = -20;
+const SPRITE_Y_OFFSET = 83;
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function isOnCanvas(xCoordinate, yCoordinate) {
+    if ((xCoordinate > -SPRITE_X_OFFSET && xCoordinate < 505)
+        && (yCoordinate >= SPRITE_Y_INITIAL_POSITION && yCoordinate <= 395)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function isValidMove(xCoordinate, yCoordinate, keyCode) {
+    if (keyCode == "left" && xCoordinate == 0 ||
+        keyCode == "up" && yCoordinate == -20 ||
+        keyCode == "right" && xCoordinate == 404 ||
+        keyCode == "down" && yCoordinate == 395) {
+        return false;
+    }
+    return true;
+}
+
 // Enemies our player must avoid
 var Enemy = function() {
     // Variables applied to each of our instances go here,
@@ -6,8 +35,11 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-
+    
     // TODO: Set enemy initial position, enemy speed
+    this.x = -SPRITE_X_OFFSET; // offscreen 1 block
+    this.y = SPRITE_Y_INITIAL_POSITION + (SPRITE_Y_OFFSET * getRandomInt(1, 3));
+    this.velocity = getRandomInt(1,6);
 };
 
 // Update the enemy's position, required method for game
@@ -18,11 +50,19 @@ Enemy.prototype.update = function(dt) {
     // all computers.
 
     // TODO: Update enemy location, handle collision
+    this.x += (SPRITE_X_OFFSET * this.velocity) * dt;
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    if (isOnCanvas(this.x, this.y)) { // do not render if off canvas
+        console.log("x = " + this.x);
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);    
+    } else {
+        this.x = -SPRITE_X_OFFSET;
+        this.y = SPRITE_Y_INITIAL_POSITION + (SPRITE_Y_OFFSET * getRandomInt(1,3));
+        this.velocity = getRandomInt(1,6);
+    }
 };
 
 // Now write your own player class
@@ -32,27 +72,56 @@ var Player = function() {
     this.sprite = 'images/char-boy.png';
 
     // TODO: Set initial position
+    this.x = SPRITE_X_OFFSET * 2;
+    this.y = SPRITE_Y_INITIAL_POSITION + (SPRITE_Y_OFFSET * 5);
 };
 
 Player.prototype.update = function(dt) {
     // TODO: Update player location, handle collision
-};
-
-Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-Player.prototype.handleInput() {
+Player.prototype.render = function() {
+    if (isOnCanvas(this.x, this.y)) {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    }
+};
+
+Player.prototype.handleInput = function(keyCode) {
     // TODO
     // up/down/left/right functionality
     // game board bounds checks - don't let the player leave the bounds
     // game reset functionality
+    if (isValidMove(this.x, this.y, keyCode)) {
+        switch (keyCode) {
+            case 'left':
+                this.x -= SPRITE_X_OFFSET;
+                break;
+            case 'up':
+                this.y -= SPRITE_Y_OFFSET;
+                break;
+            case 'right':
+                this.x += SPRITE_X_OFFSET;
+                break;
+            case 'down':
+                this.y += SPRITE_Y_OFFSET;
+                break;
+            default:
+                break;
+        }
+    }
+    console.log("x = " + this.x + ", y = " + this.y);
 };
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-
+var numEnemies = 1;
+var allEnemies = [];
+for (i = 0; i < numEnemies; ++i) {
+    allEnemies.push(new Enemy());
+}
+var player = new Player();
 
 
 // This listens for key presses and sends the keys to your
