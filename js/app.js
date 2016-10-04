@@ -4,7 +4,7 @@ var allEnemies = [];
 for (i = 0; i < numEnemies; ++i) {
     allEnemies.push(new Models.Enemy(Models.CharacterType.BUG));
 }
-var player = new Models.Player(Models.CharacterType.BOY);
+var player = new Models.Player(Models.CharacterType.GIRL_CAT);
 
 // Listen for user input and call to handle player movement
 document.addEventListener('keyup', function(e) {
