@@ -97,7 +97,6 @@ Enemy.prototype.update = function(dt) {
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     if (isOnCanvas(this.x, this.y)) { // do not render if off canvas
-        console.log("x = " + this.x);
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);    
     } else {
         this.x = -SPRITE_X_OFFSET;
@@ -152,13 +151,12 @@ Player.prototype.handleInput = function(keyCode) {
                 break;
         }
     }
-    console.log("x = " + this.x + ", y = " + this.y);
+    // console.log("x = " + this.x + ", y = " + this.y);
 };
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-console.log(Character)
 var numEnemies = 4;
 var allEnemies = [];
 for (i = 0; i < numEnemies; ++i) {
