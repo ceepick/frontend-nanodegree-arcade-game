@@ -1,6 +1,8 @@
-const SPRITE_X_OFFSET = 101;
-const SPRITE_Y_INITIAL_POSITION = -20;
-const SPRITE_Y_OFFSET = 83;
+// const SPRITE_X_OFFSET = 101;
+// const SPRITE_Y_INITIAL_POSITION = -20;
+// const SPRITE_Y_OFFSET = 83;
+
+// functions to be moved
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -27,14 +29,53 @@ function isValidMove(xCoordinate, yCoordinate, keyCode) {
     return true;
 }
 
+// CLASSES
+
+var GridPosition = function(row, column) {
+    this.row = row;
+    this.column = column;
+};
+
+var Position = function(xCoordinate, yCoordinate) {
+    this.xCoordinate = xCoordinate;
+    this.yCoordinate = yCoordinate;
+};
+
+// var CharacterType = {
+//     BOY: 0,
+//     GIRL_CAT: 1,
+//     GIRL_HORN: 2,
+//     GIRL_PINK: 3,
+//     GIRL_PRINCESS: 4,
+//     BUG: 5
+// };
+
+var Character = function(characterType) {
+    var spritePath = function(characterType) {
+        switch (characterType) {
+            case CharacterType.BOY:
+                return 'images/char-boy.png';
+                break;
+            case CharacterType.BUG:
+                return 'images/enemy-bug.png';
+                break;
+            default:
+                return undefined;
+        }
+    };
+
+    this.sprite = spritePath(characterType);
+}
+
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(characterType) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
+    // this.sprite = 'images/enemy-bug.png';
+    Character.call(this, characterType);
     
     // TODO: Set enemy initial position, enemy speed
     this.x = -SPRITE_X_OFFSET; // offscreen 1 block
@@ -68,8 +109,9 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function() {
-    this.sprite = 'images/char-boy.png';
+var Player = function(characterType) {
+    // this.sprite = 'images/char-boy.png';
+    Character.call(this, characterType);
 
     // TODO: Set initial position
     this.x = SPRITE_X_OFFSET * 2;
@@ -78,7 +120,7 @@ var Player = function() {
 
 Player.prototype.update = function(dt) {
     // TODO: Update player location, handle collision
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    // ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 Player.prototype.render = function() {
@@ -116,12 +158,13 @@ Player.prototype.handleInput = function(keyCode) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var numEnemies = 1;
+console.log(Character)
+var numEnemies = 4;
 var allEnemies = [];
 for (i = 0; i < numEnemies; ++i) {
-    allEnemies.push(new Enemy());
+    allEnemies.push(new Enemy(CharacterType.BUG));
 }
-var player = new Player();
+var player = new Player(CharacterType.BOY);
 
 
 // This listens for key presses and sends the keys to your
