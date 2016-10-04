@@ -1,4 +1,16 @@
-var Models = {};
+/**
+*	Models incapulates the logic to create, update, render, and interact with Character objects.
+*/
+var Models = {
+	CharacterType: {
+	    BOY: 0,
+	    GIRL_CAT: 1,
+	    GIRL_HORN: 2,
+	    GIRL_PINK: 3,
+	    GIRL_PRINCESS: 4,
+	    BUG: 5
+	}
+};
 
 // GLOBAL CONSTS AND ENUMS
 
@@ -10,15 +22,6 @@ const LEFT_BOUNDS = 0;
 const UPPER_BOUNDS = -20;
 const RIGHT_BOUNDS = 404;
 const LOWER_BOUNDS = 395;
-
-var CharacterType = {
-    BOY: 0,
-    GIRL_CAT: 1,
-    GIRL_HORN: 2,
-    GIRL_PINK: 3,
-    GIRL_PRINCESS: 4,
-    BUG: 5
-};
 
 (function () {
 
@@ -46,11 +49,15 @@ var CharacterType = {
 	*/
 	var isOnCanvas = function(xCoordinate, yCoordinate) {
 	    if ((xCoordinate > -SPRITE_X_OFFSET && xCoordinate < ctx.canvas.width) // horizontal bounds
-	        && (yCoordinate >= SPRITE_Y_INITIAL_POSITION && yCoordinate <= BOTTOM_BOUNDS)) { // vertical bounds
+	        && (yCoordinate >= UPPER_BOUNDS && yCoordinate <= LOWER_BOUNDS)) { // vertical bounds
 	        return true;
 	    } else {
 	        return false;
 	    }
+	};
+
+	var hasReachedTopRow = function(yCoordinate) {
+		return (yCoordinate == UPPER_BOUNDS) ? true : false;
 	};
 
 	/**
@@ -80,22 +87,22 @@ var CharacterType = {
 		var imagePath;
 		// assignment/breaks chosen over straight returns for convention and future customization if needed
         switch (characterType) {
-            case CharacterType.BOY:
+            case Models.CharacterType.BOY:
                 imagePath = 'images/char-boy.png';
                 break;
-            case CharacterType.BUG:
+            case Models.CharacterType.BUG:
                 imagePath = 'images/enemy-bug.png';
                 break;
-            case CharacterType.GIRL_CAT:
+            case Models.CharacterType.GIRL_CAT:
             	imagePath = 'images/char-cat-girl.png';
                 break;
-            case CharacterType.GIRL_HORN:
+            case Models.CharacterType.GIRL_HORN:
             	imagePath = 'images/char-horn-girl.png';
             	break;
-           	case CharacterType.GIRL_PINK:
+           	case Models.CharacterType.GIRL_PINK:
            		imagePath = 'images/char-pink-girl.png';
            		break;
-           	case CharacterType.GIRL_PRINCESS:
+           	case Models.CharacterType.GIRL_PRINCESS:
            		imagePath = 'images/char-princess-girl.png';
            		break;
             default:
@@ -125,8 +132,8 @@ var CharacterType = {
 	* 	@constructor
 	*/
 	var Position = function(xCoordinate, yCoordinate) {
-	    this.xCoordinate = xCoordinate;
-	    this.yCoordinate = yCoordinate;
+	    this.x = xCoordinate;
+	    this.y = yCoordinate;
 	};
 
 	/**
@@ -146,15 +153,15 @@ var CharacterType = {
 	Models.Enemy = function(characterType) {
 		Models.Character.call(this, characterType);
 
-		this.initialPosition = {
-			get function() {
+		this.initialConfig = {
+			get position() {
 				var x = -SPRITE_X_OFFSET; // offscreen 1 grid position
 	    		var y = SPRITE_Y_INITIAL_POSITION + (SPRITE_Y_OFFSET * getRandomInt(1, 3));
 	    		return new Position(x,y);
 			}
 		};
     
-	    this.position = this.initialPosition;
+	    this.position = this.initialConfig.position;
 	    this.velocity = getRandomInt(1,6);
 	};
 
@@ -164,7 +171,7 @@ var CharacterType = {
 	*/
 	Models.Enemy.prototype.update = function(dt) {
 		// Multiply by dt for normalization
-		this.x += (SPRITE_X_OFFSET * this.velocity) * dt;
+		this.position.x += (SPRITE_X_OFFSET * this.velocity) * dt;
 	};
 
 	/**
@@ -173,10 +180,10 @@ var CharacterType = {
 	*	of the canvas, their position is reset to the initial value (off screen left).
 	*/
 	Models.Enemy.prototype.render = function() {
-		if (isOnCanvas(this.x, this.y)) { // do not render if off canvas
-	        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);  
+		if (isOnCanvas(this.position.x, this.position.y)) { // do not render if off canvas
+	        ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y);  
 	    } else {
-	        this.position = this.initialPosition;
+	        this.position = this.initialConfig.position;
 	        this.velocity = getRandomInt(1,6);
 	    }
 	};
@@ -189,15 +196,15 @@ var CharacterType = {
 	Models.Player = function(characterType) {
 		Models.Character.call(this, characterType);
 
-		this.initialPosition = {
-			get function() {
+		this.initialConfig = {
+			get position() {
 				var x = SPRITE_X_OFFSET * 2;
 		    	var y = SPRITE_Y_INITIAL_POSITION + (SPRITE_Y_OFFSET * 5);
 	    		return new Position(x,y);
 			}
 		};
 
-		this.position = this.initialPosition;
+		this.position = this.initialConfig.position;
 	};
 
 	Models.Player.prototype.update = function(dt) {
@@ -205,28 +212,43 @@ var CharacterType = {
 	};
 
 	/**
+	*	Renders the player sprite on the canvas. Players move with user input.
+	* 	When a player reaches the top of the game board they win and the player is reset.
+	*	@param keyCode the key pressed
+	*/	
+	Models.Player.prototype.render = function() {
+		if (isOnCanvas(this.position.x, this.position.y)) {
+			ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y);
+		}
+	};
+
+	/**
 	*	Handles keyboard input in order to move character around canvas.
 	*	@param keyCode the key pressed
 	*/	
 	Models.Player.prototype.handleInput = function(keyCode) {
-	    if (isValidMove(this.x, this.y, keyCode)) {
+	    if (isValidMove(this.position.x, this.position.y, keyCode)) {
 	        switch (keyCode) {
 	            case 'left':
-	                this.x -= SPRITE_X_OFFSET;
+	                this.position.x -= SPRITE_X_OFFSET;
 	                break;
 	            case 'up':
-	                this.y -= SPRITE_Y_OFFSET;
+	                this.position.y -= SPRITE_Y_OFFSET;
 	                break;
 	            case 'right':
-	                this.x += SPRITE_X_OFFSET;
+	                this.position.x += SPRITE_X_OFFSET;
 	                break;
 	            case 'down':
-	                this.y += SPRITE_Y_OFFSET;
+	                this.position.y += SPRITE_Y_OFFSET;
 	                break;
 	            default:
 	                break;
 	        }
 	    }
-	    // console.log("x = " + this.x + ", y = " + this.y);
+	    // TODO: Winning graphic and better experience of reset
+	    if (hasReachedTopRow(this.position.y)) {
+	    	this.position = this.initialConfig.position;
+	    }
+	    // console.log("x = " + this.position.x + ", y = " + this.position.y);
 	};
 })();
