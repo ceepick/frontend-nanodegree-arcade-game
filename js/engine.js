@@ -80,14 +80,34 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
-    // function checkCollisions() {
-    //     allEnemies.forEach(function(enemy) {
-            
-    //     });
-    // }
+    function checkCollisions() {
+        var playerRect = {
+            x: player.position.x + PLAYER_SPRITE_COLLISION_X_OFFSET,
+            y: player.position.y + PLAYER_SPRITE_COLLISION_Y_OFFSET,
+            width: PLAYER_SPRITE_COLLISION_WIDTH ,
+            height: PLAYER_SPRITE_COLLISION_HEIGHT
+        };
+        var enemyRect;
+        allEnemies.forEach(function(enemy) {
+            enemyRect = {
+                x: enemy.position.x + ENEMY_BUG_SPRITE_COLLISION_X_OFFSET,
+                y: enemy.position.y + ENEMY_BUG_SPRITE_COLLISION_Y_OFFSET,
+                width: ENEMY_BUG_SPRITE_COLLISION_WIDTH,
+                height: ENEMY_BUG_SPRITE_COLLISION_HEIGHT
+            };
+
+            if (playerRect.x < enemyRect.x + enemyRect.width &&
+                playerRect.x + playerRect.width > enemyRect.x &&
+                playerRect.y < enemyRect.y + enemyRect.height &&
+                playerRect.height + playerRect.y > enemyRect.y) {
+                // collision detected, reset player position
+                player.position = player.initialConfig.position;
+            }
+        });
+    }
 
     /* This is called by the update function and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls

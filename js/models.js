@@ -1,3 +1,24 @@
+// GLOBAL CONSTANTS
+
+const SPRITE_X_OFFSET = 101;
+const SPRITE_Y_INITIAL_POSITION = -20;
+const SPRITE_Y_OFFSET = 83;
+
+const PLAYER_SPRITE_COLLISION_X_OFFSET = 17;
+const PLAYER_SPRITE_COLLISION_Y_OFFSET = 62;
+const PLAYER_SPRITE_COLLISION_WIDTH = 67;
+const PLAYER_SPRITE_COLLISION_HEIGHT = 76;
+
+const ENEMY_BUG_SPRITE_COLLISION_X_OFFSET = 1;
+const ENEMY_BUG_SPRITE_COLLISION_Y_OFFSET = 77;
+const ENEMY_BUG_SPRITE_COLLISION_WIDTH = 98;
+const ENEMY_BUG_SPRITE_COLLISION_HEIGHT = 66;
+
+const LEFT_BOUNDS = 0;
+const UPPER_BOUNDS = -20;
+const RIGHT_BOUNDS = 404;
+const LOWER_BOUNDS = 395;
+
 /**
 *	Models incapulates the logic to create, update, render, and interact with Character objects.
 */
@@ -12,20 +33,9 @@ var Models = {
 	}
 };
 
-// GLOBAL CONSTS AND ENUMS
-
-const SPRITE_X_OFFSET = 101;
-const SPRITE_Y_INITIAL_POSITION = -20;
-const SPRITE_Y_OFFSET = 83;
-
-const LEFT_BOUNDS = 0;
-const UPPER_BOUNDS = -20;
-const RIGHT_BOUNDS = 404;
-const LOWER_BOUNDS = 395;
-
 (function () {
 
-	// UTILS
+	// PRIVATE UTILS
 
 	/**
 	*	Generates random integer in min/max range inclusive.
@@ -48,14 +58,20 @@ const LOWER_BOUNDS = 395;
 	* 	@return true if on canvas, false if off canvas
 	*/
 	var isOnCanvas = function(xCoordinate, yCoordinate) {
-	    if ((xCoordinate > -SPRITE_X_OFFSET && xCoordinate < ctx.canvas.width) // horizontal bounds
-	        && (yCoordinate >= UPPER_BOUNDS && yCoordinate <= LOWER_BOUNDS)) { // vertical bounds
+	    if ((xCoordinate > -SPRITE_X_OFFSET && xCoordinate < ctx.canvas.width) && // horizontal bounds
+			(yCoordinate >= UPPER_BOUNDS && yCoordinate <= LOWER_BOUNDS)) { // vertical bounds
 	        return true;
 	    } else {
 	        return false;
 	    }
 	};
 
+	/**
+	*	Determines if user has reached the top row of the gameboard.
+	*	Used to determine if user has won the basic game by reaching the top unscathed.
+	*	@param yCoordinate the current y-axis coordinate of the player sprite
+	*	@return true if on the top row, false if not on the top row
+	*/
 	var hasReachedTopRow = function(yCoordinate) {
 		return (yCoordinate == UPPER_BOUNDS) ? true : false;
 	};
