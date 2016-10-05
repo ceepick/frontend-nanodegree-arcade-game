@@ -16,15 +16,15 @@ var Levels = {
 	Levels.Simple = function() {
 		var _ = Levels.MapSpriteUrl;
 		this.mapImages = [
-        	[_.W, _.W, _.W, _.W, _.W, _.W],
-        	[_.S, _.S, _.S, _.S, _.S, _.S],
-        	[_.S, _.S, _.S, _.S, _.S, _.S],
-        	[_.S, _.S, _.S, _.S, _.S, _.S],
-        	[_.G, _.G, _.G, _.G, _.G, _.G],
-        	[_.G, _.G, _.G, _.G, _.G, _.G]
+        	[_.W, _.W, _.W, _.W, _.W],
+        	[_.S, _.S, _.S, _.S, _.S],
+        	[_.S, _.S, _.S, _.S, _.S],
+        	[_.S, _.S, _.S, _.S, _.S],
+        	[_.G, _.G, _.G, _.G, _.G],
+        	[_.G, _.G, _.G, _.G, _.G]
         ];
         this.numRows = 6;
-        this.numCols = 6;
+        this.numCols = 5;
 	};
 
 })();

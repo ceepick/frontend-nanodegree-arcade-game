@@ -6,14 +6,14 @@ var Menus = {
 		W: 'images/block-water.png',
 		S: 'images/block-stone.png',
 		G: 'images/block-grass.png',
-		_: undefined
+		_: null
 	},
-	CharacterSptireUrl: {
+	CharacterSpriteUrl: {
 		B: 'images/char-boy.png',
 		C: 'images/char-cat-girl.png',
 		H: 'images/char-horn-girl.png',
 		P: 'images/char-pink-girl.png',
-		_: undefined
+		_: null
 	}
 };
 
@@ -22,28 +22,28 @@ var Menus = {
 	// CLASSES
 
 	Menus.CharacterSelect = function() {
-		var _ = Levels.MapSpriteUrl;
+		var _ = Menus.MapSpriteUrl;
 		this.mapImages = [
-        	[_.G, _.G, _.G, _.G, _.G, _.G],
-        	[_.G, _.G, _.G, _.G, _.G, _.G],
-        	[_.G, _.G, _.G, _.G, _.G, _.G],
-        	[_.G, _.G, _.G, _.G, _.G, _.G],
-        	[_.G, _.G, _.G, _.G, _.G, _.G],
-        	[_.G, _.G, _.G, _.G, _.G, _.G]
+        	[_.G, _.G, _.G, _.G, _.G],
+        	[_.G, _.G, _.G, _.G, _.G],
+        	[_.G, _.G, _.G, _.G, _.G],
+        	[_.G, _.G, _.G, _.G, _.G],
+        	[_.G, _.G, _.G, _.G, _.G],
+        	[_.G, _.G, _.G, _.G, _.G]
         ];
 
-        _ = Levels.CharacterSptireUrl;
+        _ = Menus.CharacterSpriteUrl;
  		this.charImages = [
-        	[_._, _._, _._, _._, _._, _._],
-        	[_._, _._, _._, _._, _._, _._],
-        	[_._, _._, _._, _._, _._, _._],
-        	[_._, _.H, _.P, _.B, _.C, _._],
-        	[_._, _._, _._, _._, _._, _._],
-        	[_._, _._, _._, _._, _._, _._]
+        	[_._, _._, _._, _._, _._],
+        	[_._, _._, _._, _._, _._],
+        	[_._, _._, _._, _._, _._],
+        	[_._, _.H, _.P, _.B, _.C],
+        	[_._, _._, _._, _._, _._],
+        	[_._, _._, _._, _._, _._]
         ];
 
         this.numRows = 6;
-        this.numCols = 6;
+        this.numCols = 5;
 	};
 
 })();
