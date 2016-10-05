@@ -50,7 +50,7 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        update(dt);
+        // update(dt);
         render();
 
         /* Set our lastTime variable which is used to determine the time delta
@@ -135,16 +135,16 @@ var Engine = (function(global) {
      * they are just drawing the entire screen over and over.
      */
     function render() {
-        renderMap(new Levels.Simple);
-        renderEntities();
-        // renderMenu(new Menus.CharacterSelect);
+        // renderMap(new Levels.Simple);
+        // renderEntities();
+        renderMenu(new Menus.CharacterSelect);
     }
 
     function renderMap(level) {
         for (row = 0; row < level.numRows; ++row) {
             for (col = 0; col < level.numCols; ++col) {
                 var sprite = level.mapImages[row][col];
-                if (sprite != undefined) {
+                if (sprite != null) {
                     ctx.drawImage(Resources.get(sprite), col * 101, row * 83);
                 }
             }
@@ -153,14 +153,25 @@ var Engine = (function(global) {
 
     function renderMenu(menu) {
         renderMap(menu);
+
         for (row = 0; row < menu.numRows; ++row) {
             for (col = 0; col < menu.numCols; ++col) {
                 var sprite = menu.charImages[row][col];
                 if (sprite != null) {
-                    ctx.drawImage(Resources.get(sprite), col * 101, row * 83);
+                    ctx.drawImage(Resources.get(sprite), col * 101, (row * 83) + SPRITE_Y_INITIAL_POSITION);
                 }
             }
         }
+
+        ctx.font = "48px serif";
+        ctx.fillStyle = "green";
+        ctx.strokeStyle = "black";
+        ctx.textAlign = "center";
+        var x = ctx.canvas.width / 2;
+        var y = ctx.canvas.height / 16;
+        ctx.fillText("CHOOSE A TOON!", x, y)
+        ctx.strokeText("CHOOSE A TOON!", x, y);
+
     }
 
     /* This function is called by the render function and is called on each game
@@ -194,6 +205,7 @@ var Engine = (function(global) {
         'images/block-stone.png',
         'images/block-water.png',
         'images/block-grass.png',
+        'images/obj-char-selector.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
         'images/char-cat-girl.png',

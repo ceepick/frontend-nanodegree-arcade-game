@@ -17,3 +17,8 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+document.addEventListener('click', function(e) {
+    // TODO - for character selection
+    console.log("click");
+});

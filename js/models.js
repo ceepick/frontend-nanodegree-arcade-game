@@ -1,7 +1,7 @@
 // GLOBAL CONSTANTS
 
 const SPRITE_X_OFFSET = 101;
-const SPRITE_Y_INITIAL_POSITION = -20;
+const SPRITE_Y_INITIAL_POSITION = -30;
 const SPRITE_Y_OFFSET = 83;
 
 const PLAYER_SPRITE_COLLISION_X_OFFSET = 30; 	// exact box: 17
@@ -15,9 +15,9 @@ const ENEMY_BUG_SPRITE_COLLISION_WIDTH = 98;
 const ENEMY_BUG_SPRITE_COLLISION_HEIGHT = 66;
 
 const LEFT_BOUNDS = 0;
-const UPPER_BOUNDS = -20;
+const UPPER_BOUNDS = -30;
 const RIGHT_BOUNDS = 404;
-const LOWER_BOUNDS = 395;
+const LOWER_BOUNDS = 385;
 
 /**
 *	Models incapulates the logic to create, update, render, and interact with Character objects.
@@ -261,10 +261,10 @@ var Models = {
 	                break;
 	        }
 	    }
+	    console.log("x = " + this.position.x + ", y = " + this.position.y);
 	    // TODO: Winning graphic and better experience of reset
 	    if (hasReachedTopRow(this.position.y)) {
 	    	this.position = this.initialConfig.position;
 	    }
-	    // console.log("x = " + this.position.x + ", y = " + this.position.y);
 	};
 })();

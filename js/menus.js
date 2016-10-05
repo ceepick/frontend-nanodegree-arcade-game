@@ -13,6 +13,11 @@ var Menus = {
 		C: 'images/char-cat-girl.png',
 		H: 'images/char-horn-girl.png',
 		P: 'images/char-pink-girl.png',
+		R: 'images/char-princess-girl.png',
+		_: null
+	},
+	ObjectSpriteUrl: {
+		C: 'images/obj-char-selector.png',
 		_: null
 	}
 };
@@ -26,9 +31,9 @@ var Menus = {
 		this.mapImages = [
         	[_.G, _.G, _.G, _.G, _.G],
         	[_.G, _.G, _.G, _.G, _.G],
-        	[_.G, _.G, _.G, _.G, _.G],
-        	[_.G, _.G, _.G, _.G, _.G],
-        	[_.G, _.G, _.G, _.G, _.G],
+        	[_.W, _.S, _.S, _.S, _.W],
+        	[_.W, _.W, _.S, _.W, _.W],
+        	[_.W, _.S, _.S, _.S, _.W],
         	[_.G, _.G, _.G, _.G, _.G]
         ];
 
@@ -36,9 +41,9 @@ var Menus = {
  		this.charImages = [
         	[_._, _._, _._, _._, _._],
         	[_._, _._, _._, _._, _._],
-        	[_._, _._, _._, _._, _._],
-        	[_._, _.H, _.P, _.B, _.C],
-        	[_._, _._, _._, _._, _._],
+        	[_._, _.H, _._, _.B, _._],
+        	[_._, _._, _.R, _._, _._],
+        	[_._, _.P, _._, _.C, _._],
         	[_._, _._, _._, _._, _._]
         ];
 

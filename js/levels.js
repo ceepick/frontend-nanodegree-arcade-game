@@ -5,7 +5,8 @@ var Levels = {
 	MapSpriteUrl: {
 		W: 'images/block-water.png',
 		S: 'images/block-stone.png',
-		G: 'images/block-grass.png'
+		G: 'images/block-grass.png',
+		_: null
 	}
 };
 
