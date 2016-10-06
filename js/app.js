@@ -4,7 +4,7 @@ var allEnemies = [];
 for (i = 0; i < numEnemies; ++i) {
     allEnemies.push(new Models.Enemy(Models.CharacterType.BUG));
 }
-var player = new Models.Player(Models.CharacterType.GIRL_HORN);
+var player = null; // user will pick character in menus
 
 // Listen for user input and call to handle player movement
 document.addEventListener('keyup', function(e) {
@@ -15,7 +15,7 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
     };
 
-    player.handleInput(allowedKeys[e.keyCode]);
+    player.handleInput(allowedKeys[e.keyCode]); // TODO: fix handleinput call before player is set
 });
 
 // Clicks tracked for character selection
