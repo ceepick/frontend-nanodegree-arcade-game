@@ -14,7 +14,8 @@
  * a little simpler to work with.
  */
 
-var Engine = (function(global) {
+// var Engine = (function(global) {
+(function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
@@ -150,7 +151,7 @@ var Engine = (function(global) {
         for (row = 0; row < layer.numRows; ++row) {
             for (col = 0; col < layer.numCols; ++col) {
                 var sprite = layer.images[row][col];
-                if (sprite != null) {
+                if (sprite !== null) {
                     ctx.drawImage(Resources.get(sprite), (col * 101) + xOffset, (row * 83) + yOffset);
                 }
             }
@@ -201,6 +202,17 @@ var Engine = (function(global) {
         // noop
     }
 
+    function getCursorPosition(canvas, event) {
+        var rect = canvas.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top;
+        // console.log("x: " + x + " y: " + y);
+
+        if (state === State.CHARACTER_SELECT) {
+            console.log("x: " + x + " y: " + y);            
+        }
+    }
+
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
@@ -224,4 +236,11 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
+
+    /*
+    *   Define public functions
+    */
+    window.Engine = {
+        onClick: getCursorPosition
+    };
 })(this);

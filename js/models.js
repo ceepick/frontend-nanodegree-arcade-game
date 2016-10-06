@@ -73,7 +73,7 @@ var Models = {
 	*	@return true if on the top row, false if not on the top row
 	*/
 	var hasReachedTopRow = function(yCoordinate) {
-		return (yCoordinate == UPPER_BOUNDS) ? true : false;
+		return (yCoordinate === UPPER_BOUNDS) ? true : false;
 	};
 
 	/**
@@ -84,10 +84,10 @@ var Models = {
 	* 	@return true if valid move, false if invalid move
 	*/
 	var isValidMove = function(xCoordinate, yCoordinate, keyCode) {
-	    if (keyCode == "left" && xCoordinate == LEFT_BOUNDS || // edge left
-	        keyCode == "up" && yCoordinate == UPPER_BOUNDS || // edge top
-	        keyCode == "right" && xCoordinate == RIGHT_BOUNDS || // edge right
-	        keyCode == "down" && yCoordinate == LOWER_BOUNDS) { // edge bottom
+	    if (keyCode === "left" && xCoordinate === LEFT_BOUNDS || // edge left
+	        keyCode === "up" && yCoordinate === UPPER_BOUNDS || // edge top
+	        keyCode === "right" && xCoordinate === RIGHT_BOUNDS || // edge right
+	        keyCode === "down" && yCoordinate === LOWER_BOUNDS) { // edge bottom
 	        return false;
 	    }
 	    return true;		

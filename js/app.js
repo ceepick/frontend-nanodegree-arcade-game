@@ -18,7 +18,9 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
+// Clicks tracked for character selection
 document.addEventListener('click', function(e) {
     // TODO - for character selection
     console.log("click");
+    Engine.onClick(ctx.canvas, e);
 });
