@@ -246,28 +246,31 @@ var Models = {
 	*	@param keyCode the key pressed
 	*/	
 	Models.Player.prototype.handleInput = function(keyCode) {
-	    if (isValidMove(this.position.x, this.position.y, keyCode)) {
-	        switch (keyCode) {
-	            case 'left':
-	                this.position.x -= SPRITE_X_OFFSET;
-	                break;
-	            case 'up':
-	                this.position.y -= SPRITE_Y_OFFSET;
-	                break;
-	            case 'right':
-	                this.position.x += SPRITE_X_OFFSET;
-	                break;
-	            case 'down':
-	                this.position.y += SPRITE_Y_OFFSET;
-	                break;
-	            default:
-	                break;
-	        }
-	    }
-	    console.log("x = " + this.position.x + ", y = " + this.position.y);
-	    // TODO: Winning graphic and better experience of reset
-	    if (hasReachedTopRow(this.position.y)) {
-	    	this.position = this.initialConfig.position;
-	    }
+		var state = Engine.currentState();
+		var s = Engine.State; // enum
+		if (state === s.LEVEL_FROGGER || state === s.LEVEL_COLLECTOR) {
+			if (isValidMove(this.position.x, this.position.y, keyCode)) {
+		        switch (keyCode) {
+		            case 'left':
+		                this.position.x -= SPRITE_X_OFFSET;
+		                break;
+		            case 'up':
+		                this.position.y -= SPRITE_Y_OFFSET;
+		                break;
+		            case 'right':
+		                this.position.x += SPRITE_X_OFFSET;
+		                break;
+		            case 'down':
+		                this.position.y += SPRITE_Y_OFFSET;
+		                break;
+		            default:
+		                break;
+		        }
+		    }
+		    // TODO: Winning graphic and better experience of reset
+		    if (hasReachedTopRow(this.position.y)) {
+		    	this.position = this.initialConfig.position;
+		    }
+		}
 	};
 })();

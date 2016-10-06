@@ -18,7 +18,7 @@ var Levels = {
 		var _ = Levels.MapSpriteUrl;
 		this.map = {
 			images: [
-				[_.W, _.W, _.W, _.W, _.W],
+				[_.W, _.W, _.S, _.W, _.W],
 	        	[_.S, _.S, _.S, _.S, _.S],
 	        	[_.S, _.S, _.S, _.S, _.S],
 	        	[_.S, _.S, _.S, _.S, _.S],
@@ -27,6 +27,22 @@ var Levels = {
 			],
 			numRows: 6,
 			numCols: 5
+		};
+	};
+
+	Levels.Collector = function() {
+		var _ = Levels.MapSpriteUrl;
+		this.map = {
+			images: [
+				[_.S, _.G, _.G, _.G, _.S],
+	        	[_.G, _.G, _.G, _.G, _.G],
+	        	[_.G, _.G, _.G, _.G, _.G],
+	        	[_.G, _.G, _.G, _.G, _.G],
+	        	[_.G, _.G, _.G, _.G, _.G],
+	        	[_.S, _.G, _.G, _.G, _.S]
+	        ],
+	        numRows: 6,
+	        numCols: 5
 		};
 	};
 

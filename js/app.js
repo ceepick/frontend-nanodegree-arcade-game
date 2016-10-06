@@ -15,12 +15,14 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
     };
 
-    player.handleInput(allowedKeys[e.keyCode]); // TODO: fix handleinput call before player is set
+    // only call handleInput if a player has been selected
+    if (player !== null) {
+        player.handleInput(allowedKeys[e.keyCode]); // TODO: fix handleinput call before player is set
+    }
 });
 
 // Clicks tracked for character selection
 document.addEventListener('click', function(e) {
-    // TODO - for character selection
-    console.log("click");
+    // Signal engine that click has occured
     Engine.onClick(ctx.canvas, e);
 });

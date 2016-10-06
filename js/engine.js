@@ -28,7 +28,8 @@
 
     // Cache menus and levels to prevent redeclaration in rendering loop
     var characterSelectMenu = new Menus.CharacterSelect(),
-        froggerLevel = new Levels.Frogger();
+        froggerLevel = new Levels.Frogger(),
+        collectorLevel = new Levels.Collector();
 
     // State enum to transition between different screens on the game
     var State = {
@@ -122,6 +123,14 @@
             enemy.update(dt);
         });
         player.update();
+    }
+
+    /**
+    *   Retrieves the current value of the state variable.
+    *   @return the current value of state
+    */
+    function currentState() {
+        return state;
     }
 
     /**
@@ -364,6 +373,8 @@
     *   Define public functions
     */
     window.Engine = {
-        onClick: onClick
+        onClick: onClick,
+        currentState: currentState,  // current state
+        State: State // Enum
     };
 })(this);
