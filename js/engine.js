@@ -25,6 +25,17 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
+    var characterSelectMenu = new Menus.CharacterSelect(),
+        froggerLevel = new Levels.Frogger();
+
+    var State = {
+        CHARACTER_SELECT: 1,
+        LEVEL_FROGGER: 2,
+        LEVEL_COLLECTOR: 3
+    }
+
+    var state = State.CHARACTER_SELECT;
+
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
@@ -43,15 +54,21 @@ var Engine = (function(global) {
             dt = (now - lastTime) / 1000.0;
 
 
-        // 1. Game starts, show menu
-        // 2. User makes selections, gameplay begins
-
-
-        /* Call our update/render functions, pass along the time delta to
+         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        // update(dt);
-        render();
+        switch (state) {
+            case State.CHARACTER_SELECT:
+                renderCharacterSelect(characterSelectMenu);
+                break;
+            case State.LEVEL_FROGGER:
+                update(dt);
+                renderFrogger(froggerLevel);
+                break;
+            case State.LEVEL_COLLECTOR:
+                break;
+            default:
+        }
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -88,6 +105,7 @@ var Engine = (function(global) {
         checkCollisions();
     }
 
+    // TODO - animate char before reset
     function checkCollisions() {
         var playerRect = {
             x: player.position.x + PLAYER_SPRITE_COLLISION_X_OFFSET,
@@ -128,50 +146,36 @@ var Engine = (function(global) {
         player.update();
     }
 
-    /* This function initially draws the "game level", it will then call
-     * the renderEntities function. Remember, this function is called every
-     * game tick (or loop of the game engine) because that's how games work -
-     * they are flipbooks creating the illusion of animation but in reality
-     * they are just drawing the entire screen over and over.
-     */
-    function render() {
-        // renderMap(new Levels.Simple);
-        // renderEntities();
-        renderMenu(new Menus.CharacterSelect);
-    }
-
-    function renderMap(level) {
-        for (row = 0; row < level.numRows; ++row) {
-            for (col = 0; col < level.numCols; ++col) {
-                var sprite = level.mapImages[row][col];
+    function renderLayer(layer, xOffset, yOffset) {
+        for (row = 0; row < layer.numRows; ++row) {
+            for (col = 0; col < layer.numCols; ++col) {
+                var sprite = layer.images[row][col];
                 if (sprite != null) {
-                    ctx.drawImage(Resources.get(sprite), col * 101, row * 83);
+                    ctx.drawImage(Resources.get(sprite), (col * 101) + xOffset, (row * 83) + yOffset);
                 }
             }
         }
     }
 
-    function renderMenu(menu) {
-        renderMap(menu);
+    function renderCharacterSelect(menu) {
+        // draw scene
+        renderLayer(menu.map, 0, 0);
+        renderLayer(menu.characters, 0, SPRITE_Y_INITIAL_POSITION);
 
-        for (row = 0; row < menu.numRows; ++row) {
-            for (col = 0; col < menu.numCols; ++col) {
-                var sprite = menu.charImages[row][col];
-                if (sprite != null) {
-                    ctx.drawImage(Resources.get(sprite), col * 101, (row * 83) + SPRITE_Y_INITIAL_POSITION);
-                }
-            }
-        }
-
+        // render text
         ctx.font = "48px serif";
         ctx.fillStyle = "green";
-        ctx.strokeStyle = "black";
+        ctx.strokeStyle = "blue";
         ctx.textAlign = "center";
         var x = ctx.canvas.width / 2;
         var y = ctx.canvas.height / 16;
         ctx.fillText("CHOOSE A TOON!", x, y)
         ctx.strokeText("CHOOSE A TOON!", x, y);
+    }
 
+    function renderFrogger(level) {
+        renderLayer(level.map, 0, 0);
+        renderEntities();
     }
 
     /* This function is called by the render function and is called on each game

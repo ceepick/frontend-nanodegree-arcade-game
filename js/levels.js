@@ -14,18 +14,20 @@ var Levels = {
 
 	// CLASSES
 
-	Levels.Simple = function() {
+	Levels.Frogger = function() {
 		var _ = Levels.MapSpriteUrl;
-		this.mapImages = [
-        	[_.W, _.W, _.W, _.W, _.W],
-        	[_.S, _.S, _.S, _.S, _.S],
-        	[_.S, _.S, _.S, _.S, _.S],
-        	[_.S, _.S, _.S, _.S, _.S],
-        	[_.G, _.G, _.G, _.G, _.G],
-        	[_.G, _.G, _.G, _.G, _.G]
-        ];
-        this.numRows = 6;
-        this.numCols = 5;
+		this.map = {
+			images: [
+				[_.W, _.W, _.W, _.W, _.W],
+	        	[_.S, _.S, _.S, _.S, _.S],
+	        	[_.S, _.S, _.S, _.S, _.S],
+	        	[_.S, _.S, _.S, _.S, _.S],
+	        	[_.G, _.G, _.G, _.G, _.G],
+	        	[_.G, _.G, _.G, _.G, _.G]
+			],
+			numRows: 6,
+			numCols: 5
+		};
 	};
 
 })();

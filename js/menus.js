@@ -28,27 +28,32 @@ var Menus = {
 
 	Menus.CharacterSelect = function() {
 		var _ = Menus.MapSpriteUrl;
-		this.mapImages = [
-        	[_.G, _.G, _.G, _.G, _.G],
-        	[_.G, _.G, _.G, _.G, _.G],
-        	[_.W, _.S, _.S, _.S, _.W],
-        	[_.W, _.W, _.S, _.W, _.W],
-        	[_.W, _.S, _.S, _.S, _.W],
-        	[_.G, _.G, _.G, _.G, _.G]
-        ];
+		this.map = {
+			images: [
+				[_.G, _.G, _.G, _.G, _.G],
+	        	[_.G, _.G, _.G, _.G, _.G],
+	        	[_.W, _.S, _.S, _.S, _.W],
+	        	[_.W, _.W, _.S, _.W, _.W],
+	        	[_.W, _.S, _.S, _.S, _.W],
+	        	[_.G, _.G, _.G, _.G, _.G]
+			],
+			numRows: 6,
+			numCols: 5
+		};
 
         _ = Menus.CharacterSpriteUrl;
- 		this.charImages = [
-        	[_._, _._, _._, _._, _._],
-        	[_._, _._, _._, _._, _._],
-        	[_._, _.H, _._, _.B, _._],
-        	[_._, _._, _.R, _._, _._],
-        	[_._, _.P, _._, _.C, _._],
-        	[_._, _._, _._, _._, _._]
-        ];
-
-        this.numRows = 6;
-        this.numCols = 5;
+        this.characters = {
+        	images: [
+        		[_._, _._, _._, _._, _._],
+	        	[_._, _._, _._, _._, _._],
+	        	[_._, _.H, _._, _.B, _._],
+	        	[_._, _._, _.R, _._, _._],
+	        	[_._, _.P, _._, _.C, _._],
+	        	[_._, _._, _._, _._, _._]
+        	],
+        	numRows: 6,
+        	numCols: 5
+        };
 	};
 
 })();
