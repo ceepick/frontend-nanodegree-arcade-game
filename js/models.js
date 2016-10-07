@@ -3,7 +3,6 @@
 const SPRITE_WIDTH = 101;
 const SPRITE_HEIGHT = 171;
 
-const SPRITE_X_OFFSET = 101;
 const SPRITE_Y_INITIAL_POSITION = -30;
 const SPRITE_Y_OFFSET = 83;
 
@@ -94,18 +93,6 @@ var Models = {
     };
 
 	// CLASSES
-
-	/**
-	*	Defines the gameboard grid position of a character sprite.
-	*	TODO: Needed for collision? Future gameplay use cases?
-	*	@param row
-	*	@param column
-	* 	@constructor
-	*/
-	var GridPosition = function(row, column) {
-	    this.row = row;
-	    this.column = column;
-	};
 
 	/**
 	*	Character base class. Currently only used to provide sprite.

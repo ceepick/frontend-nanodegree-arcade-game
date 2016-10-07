@@ -315,18 +315,16 @@
         for (row = 0; row < chars.numRows; ++row) {
             for (col = 0; col < chars.numCols; ++col) {
                 var sprite = chars.images[row][col];
-                var spriteInfo;
                 if (sprite !== null) {
-                    spriteInfo = {
+                    spriteInfos.push({
                         characterType: characterType(sprite),
                         rect: {
-                            x: col * SPRITE_X_OFFSET,
+                            x: col * SPRITE_WIDTH,
                             y: row * SPRITE_Y_OFFSET - SPRITE_Y_INITIAL_POSITION,
                             width: SPRITE_WIDTH,
                             height: PLAYER_SPRITE_COLLISION_HEIGHT
                         }
-                    };
-                    spriteInfos.push(spriteInfo);
+                    });
                 }
             }
         }
