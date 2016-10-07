@@ -50,22 +50,6 @@ var Models = {
 	};
 
 	/**
-	*	Determines if sprite is currently on the canvas.
-	*	Used to determine if sprite should be rendered.
-	*	@param xCoordinate position on the x-axis
-	*	@param yCoordinate position on the y-axis
-	* 	@return true if on canvas, false if off canvas
-	*/
-	var isOnCanvas = function(xCoordinate, yCoordinate) {
-	    if ((xCoordinate > -SPRITE_X_OFFSET && xCoordinate < ctx.canvas.width) && // horizontal bounds
-			(yCoordinate >= UPPER_BOUNDS && yCoordinate <= LOWER_BOUNDS)) { // vertical bounds
-	        return true;
-	    } else {
-	        return false;
-	    }
-	};
-
-	/**
 	*	Determines if user has reached the top row of the gameboard.
 	*	Used to determine if user has won the basic game by reaching the top unscathed.
 	*	@param yCoordinate the current y-axis coordinate of the player sprite
@@ -73,23 +57,6 @@ var Models = {
 	*/
 	var hasReachedTopRow = function(yCoordinate) {
 		return (yCoordinate === UPPER_BOUNDS) ? true : false;
-	};
-
-	/**
-	*	Determines if sprite should be able to move in a particular direction on the canvas.
-	*	@param xCoordinate position on the x-axis
-	*	@param yCoordinate position on the y-axis
-	*	@param keyCode code associated with key press
-	* 	@return true if valid move, false if invalid move
-	*/
-	var isValidMove = function(xCoordinate, yCoordinate, keyCode) {
-	    if (keyCode === "left" && xCoordinate === LEFT_BOUNDS || // edge left
-	        keyCode === "up" && yCoordinate === UPPER_BOUNDS || // edge top
-	        keyCode === "right" && xCoordinate === RIGHT_BOUNDS || // edge right
-	        keyCode === "down" && yCoordinate === LOWER_BOUNDS) { // edge bottom
-	        return false;
-	    }
-	    return true;		
 	};
 
 	/**
@@ -165,6 +132,21 @@ var Models = {
 	};
 
 	/**
+	*	Determines if sprite is currently on the canvas.
+	*	Used to determine if sprite should be rendered.
+	* 	@return true if on canvas, false if off canvas
+	*/
+	Models.Character.prototype.isOnCanvas = function() {
+		var x = this.origin.x, y = this.origin.y;
+		if ((x > -this.spriteSize.width && x < ctx.canvas.width) && // horizontal bounds
+			(y >= UPPER_BOUNDS && y <= LOWER_BOUNDS)) { // vertical bounds
+	        return true;
+	    } else {
+	        return false;
+	    }
+	};
+
+	/**
 	*	Enemies our player must avoid.
 	*	@param characterType enumeration value that signals proper configuration
 	*	@constructor
@@ -192,7 +174,7 @@ var Models = {
 	*/
 	Models.Enemy.prototype.update = function(dt) {
 		// Multiply by dt for normalization
-		this.origin.x += (SPRITE_X_OFFSET * this.velocity) * dt;
+		this.origin.x += (this.spriteSize.width * this.velocity) * dt;
 	};
 
 	/**
@@ -201,7 +183,7 @@ var Models = {
 	*	of the canvas, their position is reset to the initial value (off screen left).
 	*/
 	Models.Enemy.prototype.render = function() {
-		if (isOnCanvas(this.origin.x, this.origin.y)) { // do not render if off canvas
+		if (this.isOnCanvas()) { // do not render if off canvas
 	        ctx.drawImage(Resources.get(this.sprite), this.origin.x, this.origin.y);  
 	    } else {
 	        this.origin = this.initialOrigin;
@@ -240,9 +222,25 @@ var Models = {
 	*	@param keyCode the key pressed
 	*/	
 	Models.Player.prototype.render = function() {
-		if (isOnCanvas(this.origin.x, this.origin.y)) {
+		if (this.isOnCanvas()) {
 			ctx.drawImage(Resources.get(this.sprite), this.origin.x, this.origin.y);
 		}
+	};
+
+	/**
+	*	Determines if sprite should be able to move in a particular direction on the canvas.
+	*	@param keyCode code associated with key press
+	* 	@return true if valid move, false if invalid move
+	*/
+	Models.Player.prototype.isValidMove = function(keyCode) {
+		var x = this.origin.x, y = this.origin.y;
+		if (keyCode === "left" && x === LEFT_BOUNDS || // edge left
+	        keyCode === "up" && y === UPPER_BOUNDS || // edge top
+	        keyCode === "right" && x === RIGHT_BOUNDS || // edge right
+	        keyCode === "down" && y === LOWER_BOUNDS) { // edge bottom
+	        return false;
+	    }
+	    return true;
 	};
 
 	/**
@@ -251,9 +249,9 @@ var Models = {
 	*/	
 	Models.Player.prototype.handleInput = function(keyCode) {
 		var state = Engine.currentState();
-		var s = Engine.State; // enum
-		if (state === s.LEVEL_FROGGER || state === s.LEVEL_COLLECTOR) {
-			if (isValidMove(this.origin.x, this.origin.y, keyCode)) {
+		var _ = Engine.State; // enum
+		if (state === _.LEVEL_FROGGER || state === _.LEVEL_COLLECTOR) {
+			if (this.isValidMove(keyCode)) {
 				var origin = this.origin;
 				var blockOffset = this.blockOffset;
 		        switch (keyCode) {

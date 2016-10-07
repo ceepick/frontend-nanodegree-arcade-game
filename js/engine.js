@@ -146,8 +146,6 @@
             case State.LEVEL_FROGGER:
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 player = new Models.Player(metadata.characterType);
-                var playerRect = player.rect();
-                console.log(player.rect());
                 break;
             case State.LEVEL_COLLECTOR:
                 break;
