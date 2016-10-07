@@ -146,6 +146,8 @@
             case State.LEVEL_FROGGER:
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 player = new Models.Player(metadata.characterType);
+                var playerRect = player.rect();
+                console.log(player.rect());
                 break;
             case State.LEVEL_COLLECTOR:
                 break;
@@ -176,22 +178,11 @@
     */
     // TODO - animate char before reset
     function checkCollisions() {
-        var pConfig = player.renderConfig;
-        var playerRect = {
-            x: player.origin.x + player.collisionOffset.x,
-            y: player.origin.y + player.collisionOffset.y,
-            width: player.collisionSize.width,
-            height: player.collisionSize.height
-        };
+        var playerRect = player.rect();
+
         var enemyRect;
         allEnemies.forEach(function(enemy) {
-            enemyRect = {
-                x: enemy.origin.x + enemy.collisionOffset.x,
-                y: enemy.origin.y + enemy.collisionOffset.y,
-                width: enemy.collisionSize.width,
-                height: enemy.collisionSize.height
-            };
-
+            enemyRect = enemy.rect();
             if (isCollision(playerRect, enemyRect)) {
                 // collision detected, reset player position
                 player.origin = player.initialOrigin;

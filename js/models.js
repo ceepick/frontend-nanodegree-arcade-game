@@ -153,6 +153,18 @@ var Models = {
 	};
 
 	/**
+	*
+	*/
+	Models.Character.prototype.rect = function() {
+		return {
+			x: this.origin.x + this.collisionOffset.x, 
+			y: this.origin.y + this.collisionOffset.y,
+			width: this.collisionSize.width,
+			height: this.collisionSize.height
+		}
+	};
+
+	/**
 	*	Enemies our player must avoid.
 	*	@param characterType enumeration value that signals proper configuration
 	*	@constructor
@@ -162,16 +174,17 @@ var Models = {
 
 		this.collisionOffset = {x: 1, y: 77};
 		this.collisionSize = {width: 98, height: 66};
+		Object.defineProperty(this, "initialOrigin", {
+			get: function() {
+				var x = -this.blockOffset.x; // offscreen 1 grid position
+				var y = this.spriteOffset.y + (this.blockOffset.y * getRandomInt(1, 3));
+				return {x: x, y: y};
+			}
+		});
 	    this.origin = this.initialOrigin;
 	    this.velocity = getRandomInt(1,6);
 	};
-	Models.Enemy.prototype = {
-		get initialOrigin() {
-			var x = -this.blockOffset.x; // offscreen 1 grid position
-			var y = this.spriteOffset.y + (this.blockOffset.y * getRandomInt(1, 3));
-			return {x: x, y: y};
-		}
-	}
+	Models.Enemy.prototype = Object.create(Models.Character.prototype);
 
 	/**
 	*	Update the enemy's position.
@@ -206,15 +219,16 @@ var Models = {
 
 		this.collisionOffset = {x: 30, y: 62};
 		this.collisionSize = {width: 40, height: 70};
+		Object.defineProperty(this, "initialOrigin", {
+			get: function() {
+				var x = this.blockOffset.x * 2;
+		    	var y = this.spriteOffset.y + (this.blockOffset.y * 5);
+		    	return {x: x, y: y};
+		    }
+		});
 		this.origin = this.initialOrigin;
 	};
-	Models.Player.prototype = {
-		get initialOrigin() {
-			var x = this.blockOffset.x * 2;
-	    	var y = this.spriteOffset.y + (this.blockOffset.y * 5);
-	    	return {x: x, y: y};
-		}
-	}
+	Models.Player.prototype = Object.create(Models.Character.prototype);
 
 	Models.Player.prototype.update = function(dt) {
 		// TODO? handle input seems to handle updating of character
