@@ -162,10 +162,8 @@
     *   @return true if collions detected, false if no collision detected
     */
     function isCollision(rect1, rect2) {
-        if (rect1.x < rect2.x + rect2.width &&
-            rect1.x + rect1.width > rect2.x &&
-            rect1.y < rect2.y + rect2.height &&
-            rect1.height + rect1.y > rect2.y) {
+        if (rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x &&
+            rect1.y < rect2.y + rect2.height && rect1.height + rect1.y > rect2.y) {
             // collision detected, reset player position
             return true;
         } else {
@@ -178,24 +176,25 @@
     */
     // TODO - animate char before reset
     function checkCollisions() {
+        var pConfig = player.renderConfig;
         var playerRect = {
-            x: player.origin.x + PLAYER_SPRITE_COLLISION_X_OFFSET,
-            y: player.origin.y + PLAYER_SPRITE_COLLISION_Y_OFFSET,
-            width: PLAYER_SPRITE_COLLISION_WIDTH ,
-            height: PLAYER_SPRITE_COLLISION_HEIGHT
+            x: player.origin.x + player.collisionOffset.x,
+            y: player.origin.y + player.collisionOffset.y,
+            width: player.collisionSize.width,
+            height: player.collisionSize.height
         };
         var enemyRect;
         allEnemies.forEach(function(enemy) {
             enemyRect = {
-                x: enemy.origin.x + enemy.renderConfig.xOffsetCollision,
-                y: enemy.origin.y + enemy.renderConfig.yOffsetCollision,
-                width: enemy.renderConfig.widthCollision,
-                height: enemy.renderConfig.heightCollision
+                x: enemy.origin.x + enemy.collisionOffset.x,
+                y: enemy.origin.y + enemy.collisionOffset.y,
+                width: enemy.collisionSize.width,
+                height: enemy.collisionSize.height
             };
 
             if (isCollision(playerRect, enemyRect)) {
                 // collision detected, reset player position
-                player.origin = player.renderConfig.initialOrigin;
+                player.origin = player.initialOrigin;
             }
         });
     }

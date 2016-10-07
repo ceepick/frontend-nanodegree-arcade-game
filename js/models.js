@@ -147,6 +147,9 @@ var Models = {
 	*/
 	Models.Character = function(characterType) {
 		this.sprite = spritePath(characterType);
+		this.spriteSize = {width: 101, height: 171};
+		this.spriteOffset = {x: 0, y: -30};
+		this.blockOffset = {x: 101, y: 83};
 	};
 
 	/**
@@ -157,26 +160,18 @@ var Models = {
 	Models.Enemy = function(characterType) {
 		Models.Character.call(this, characterType);
 
-		this.renderConfig = {
-			xOffset: 101,
-			yOffset: 83,
-			xOrigin: 0,
-			yOrigin: -30,
-			xOffsetCollision: 1,
-			yOffsetCollision: 77,
-			widthCollision: 98,
-			heightCollision: 66,
-
-			get initialOrigin() {
-				var x = -this.xOffset; // offscreen 1 grid position
-	    		var y = this.yOrigin + (this.yOffset * getRandomInt(1, 3));
-	    		return {x: x, y: y};
-			}
-		};
-    
-	    this.origin = this.renderConfig.initialOrigin;
+		this.collisionOffset = {x: 1, y: 77};
+		this.collisionSize = {width: 98, height: 66};
+	    this.origin = this.initialOrigin;
 	    this.velocity = getRandomInt(1,6);
 	};
+	Models.Enemy.prototype = {
+		get initialOrigin() {
+			var x = -this.blockOffset.x; // offscreen 1 grid position
+			var y = this.spriteOffset.y + (this.blockOffset.y * getRandomInt(1, 3));
+			return {x: x, y: y};
+		}
+	}
 
 	/**
 	*	Update the enemy's position.
@@ -196,7 +191,7 @@ var Models = {
 		if (isOnCanvas(this.origin.x, this.origin.y)) { // do not render if off canvas
 	        ctx.drawImage(Resources.get(this.sprite), this.origin.x, this.origin.y);  
 	    } else {
-	        this.origin = this.renderConfig.initialOrigin;
+	        this.origin = this.initialOrigin;
 	        this.velocity = getRandomInt(1,6);
 	    }
 	};
@@ -209,25 +204,17 @@ var Models = {
 	Models.Player = function(characterType) {
 		Models.Character.call(this, characterType);
 
-		this.renderConfig = {
-			xOffset: 101,
-			yOffset: 83,
-			xOrigin: 0,
-			yOrigin: -30,
-			xOffsetCollision: 30,
-			yOffsetCollision: 62,
-			widthCollision: 40,
-			heightCollision: 70,
-
-			get initialOrigin() {
-				var x = this.xOffset * 2;
-		    	var y = this.yOrigin + (this.yOffset * 5);
-		    	return {x: x, y: y};
-			}
-		};
-
-		this.origin = this.renderConfig.initialOrigin;
+		this.collisionOffset = {x: 30, y: 62};
+		this.collisionSize = {width: 40, height: 70};
+		this.origin = this.initialOrigin;
 	};
+	Models.Player.prototype = {
+		get initialOrigin() {
+			var x = this.blockOffset.x * 2;
+	    	var y = this.spriteOffset.y + (this.blockOffset.y * 5);
+	    	return {x: x, y: y};
+		}
+	}
 
 	Models.Player.prototype.update = function(dt) {
 		// TODO? handle input seems to handle updating of character
@@ -253,18 +240,20 @@ var Models = {
 		var s = Engine.State; // enum
 		if (state === s.LEVEL_FROGGER || state === s.LEVEL_COLLECTOR) {
 			if (isValidMove(this.origin.x, this.origin.y, keyCode)) {
+				var origin = this.origin;
+				var blockOffset = this.blockOffset;
 		        switch (keyCode) {
 		            case 'left':
-		                this.origin.x -= SPRITE_X_OFFSET;
+		                origin.x -= blockOffset.x;
 		                break;
 		            case 'up':
-		                this.origin.y -= SPRITE_Y_OFFSET;
+		                origin.y -= blockOffset.y;
 		                break;
 		            case 'right':
-		                this.origin.x += SPRITE_X_OFFSET;
+		                origin.x += blockOffset.x;
 		                break;
 		            case 'down':
-		                this.origin.y += SPRITE_Y_OFFSET;
+		                origin.y += blockOffset.y;
 		                break;
 		            default:
 		                break;
@@ -272,7 +261,7 @@ var Models = {
 		    }
 		    // TODO: Winning graphic and better experience of reset
 		    if (hasReachedTopRow(this.origin.y)) {
-		    	this.origin = this.renderConfig.initialOrigin;
+		    	this.origin = this.initialOrigin;
 		    }
 		}
 	};
