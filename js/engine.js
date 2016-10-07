@@ -33,11 +33,11 @@
 
     // State enum to transition between different screens on the game
     var State = {
-        CHARACTER_SELECT: 1,
+        MENU_CHARACTER_SELECT: 1,
         LEVEL_FROGGER: 2,
         LEVEL_COLLECTOR: 3
     }
-    var state = State.CHARACTER_SELECT; // initial state
+    var state = State.MENU_CHARACTER_SELECT; // initial state
     
     // This object is used to assist in the selection of a character
     var characterSelectSpriteInfo = populateCharacterSelectInfo(characterSelectMenu);
@@ -64,7 +64,7 @@
          * our update function since it may be used for smooth animation.
          */
         switch (state) {
-            case State.CHARACTER_SELECT:
+            case State.MENU_CHARACTER_SELECT:
                 renderCharacterSelect(characterSelectMenu);
                 break;
             case State.LEVEL_FROGGER:
@@ -141,7 +141,7 @@
     function changeState(nextState, metadata) {
         // execute work before state change
         switch (nextState) {
-            case State.CHARACTER_SELECT:
+            case State.MENU_CHARACTER_SELECT:
                 break;
             case State.LEVEL_FROGGER:
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -179,23 +179,23 @@
     // TODO - animate char before reset
     function checkCollisions() {
         var playerRect = {
-            x: player.position.x + PLAYER_SPRITE_COLLISION_X_OFFSET,
-            y: player.position.y + PLAYER_SPRITE_COLLISION_Y_OFFSET,
+            x: player.origin.x + PLAYER_SPRITE_COLLISION_X_OFFSET,
+            y: player.origin.y + PLAYER_SPRITE_COLLISION_Y_OFFSET,
             width: PLAYER_SPRITE_COLLISION_WIDTH ,
             height: PLAYER_SPRITE_COLLISION_HEIGHT
         };
         var enemyRect;
         allEnemies.forEach(function(enemy) {
             enemyRect = {
-                x: enemy.position.x + ENEMY_BUG_SPRITE_COLLISION_X_OFFSET,
-                y: enemy.position.y + ENEMY_BUG_SPRITE_COLLISION_Y_OFFSET,
-                width: ENEMY_BUG_SPRITE_COLLISION_WIDTH,
-                height: ENEMY_BUG_SPRITE_COLLISION_HEIGHT
+                x: enemy.origin.x + enemy.renderConfig.xOffsetCollision,
+                y: enemy.origin.y + enemy.renderConfig.yOffsetCollision,
+                width: enemy.renderConfig.widthCollision,
+                height: enemy.renderConfig.heightCollision
             };
 
             if (isCollision(playerRect, enemyRect)) {
                 // collision detected, reset player position
-                player.position = player.initialConfig.position;
+                player.origin = player.renderConfig.initialOrigin;
             }
         });
     }
@@ -283,7 +283,7 @@
         var y = event.clientY - rect.top;
 
         // Determine which character has been selected and change state to the selected game
-        if (state === State.CHARACTER_SELECT) {
+        if (state === State.MENU_CHARACTER_SELECT) {
             var clickRect = {x: x, y: y, width: 1, height: 1};
             characterSelectSpriteInfo.forEach(function(spriteInfo) {
                 if (isCollision(clickRect, spriteInfo.rect)) {

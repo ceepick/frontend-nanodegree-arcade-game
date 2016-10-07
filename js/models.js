@@ -12,11 +12,6 @@ const PLAYER_SPRITE_COLLISION_Y_OFFSET = 62; 	// exact box: 62
 const PLAYER_SPRITE_COLLISION_WIDTH = 40; 		// exact box: 67
 const PLAYER_SPRITE_COLLISION_HEIGHT = 76;
 
-const ENEMY_BUG_SPRITE_COLLISION_X_OFFSET = 1;
-const ENEMY_BUG_SPRITE_COLLISION_Y_OFFSET = 77;
-const ENEMY_BUG_SPRITE_COLLISION_WIDTH = 98;
-const ENEMY_BUG_SPRITE_COLLISION_HEIGHT = 66;
-
 const LEFT_BOUNDS = 0;
 const UPPER_BOUNDS = -30;
 const RIGHT_BOUNDS = 404;
@@ -26,6 +21,7 @@ const LOWER_BOUNDS = 385;
 *	Models incapulates the logic to create, update, render, and interact with Character objects.
 */
 var Models = {
+	// Enumeration of all character types
 	CharacterType: {
 	    BOY: 0,
 	    GIRL_CAT: 1,
@@ -145,17 +141,6 @@ var Models = {
 	};
 
 	/**
-	*	Defines the location of a sprite on the canvas.
-	*	@param xCoordinate
-	*	@param yCoordinate
-	* 	@constructor
-	*/
-	var Position = function(xCoordinate, yCoordinate) {
-	    this.x = xCoordinate;
-	    this.y = yCoordinate;
-	};
-
-	/**
 	*	Character base class. Currently only used to provide sprite.
 	*	@param CharacterType enumeration that signals proper configuration
 	*	@constructor
@@ -172,15 +157,24 @@ var Models = {
 	Models.Enemy = function(characterType) {
 		Models.Character.call(this, characterType);
 
-		this.initialConfig = {
-			get position() {
-				var x = -SPRITE_X_OFFSET; // offscreen 1 grid position
-	    		var y = SPRITE_Y_INITIAL_POSITION + (SPRITE_Y_OFFSET * getRandomInt(1, 3));
-	    		return new Position(x,y);
+		this.renderConfig = {
+			xOffset: 101,
+			yOffset: 83,
+			xOrigin: 0,
+			yOrigin: -30,
+			xOffsetCollision: 1,
+			yOffsetCollision: 77,
+			widthCollision: 98,
+			heightCollision: 66,
+
+			get initialOrigin() {
+				var x = -this.xOffset; // offscreen 1 grid position
+	    		var y = this.yOrigin + (this.yOffset * getRandomInt(1, 3));
+	    		return {x: x, y: y};
 			}
 		};
     
-	    this.position = this.initialConfig.position;
+	    this.origin = this.renderConfig.initialOrigin;
 	    this.velocity = getRandomInt(1,6);
 	};
 
@@ -190,7 +184,7 @@ var Models = {
 	*/
 	Models.Enemy.prototype.update = function(dt) {
 		// Multiply by dt for normalization
-		this.position.x += (SPRITE_X_OFFSET * this.velocity) * dt;
+		this.origin.x += (SPRITE_X_OFFSET * this.velocity) * dt;
 	};
 
 	/**
@@ -199,10 +193,10 @@ var Models = {
 	*	of the canvas, their position is reset to the initial value (off screen left).
 	*/
 	Models.Enemy.prototype.render = function() {
-		if (isOnCanvas(this.position.x, this.position.y)) { // do not render if off canvas
-	        ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y);  
+		if (isOnCanvas(this.origin.x, this.origin.y)) { // do not render if off canvas
+	        ctx.drawImage(Resources.get(this.sprite), this.origin.x, this.origin.y);  
 	    } else {
-	        this.position = this.initialConfig.position;
+	        this.origin = this.renderConfig.initialOrigin;
 	        this.velocity = getRandomInt(1,6);
 	    }
 	};
@@ -215,15 +209,24 @@ var Models = {
 	Models.Player = function(characterType) {
 		Models.Character.call(this, characterType);
 
-		this.initialConfig = {
-			get position() {
-				var x = SPRITE_X_OFFSET * 2;
-		    	var y = SPRITE_Y_INITIAL_POSITION + (SPRITE_Y_OFFSET * 5);
-	    		return new Position(x,y);
+		this.renderConfig = {
+			xOffset: 101,
+			yOffset: 83,
+			xOrigin: 0,
+			yOrigin: -30,
+			xOffsetCollision: 30,
+			yOffsetCollision: 62,
+			widthCollision: 40,
+			heightCollision: 70,
+
+			get initialOrigin() {
+				var x = this.xOffset * 2;
+		    	var y = this.yOrigin + (this.yOffset * 5);
+		    	return {x: x, y: y};
 			}
 		};
 
-		this.position = this.initialConfig.position;
+		this.origin = this.renderConfig.initialOrigin;
 	};
 
 	Models.Player.prototype.update = function(dt) {
@@ -236,8 +239,8 @@ var Models = {
 	*	@param keyCode the key pressed
 	*/	
 	Models.Player.prototype.render = function() {
-		if (isOnCanvas(this.position.x, this.position.y)) {
-			ctx.drawImage(Resources.get(this.sprite), this.position.x, this.position.y);
+		if (isOnCanvas(this.origin.x, this.origin.y)) {
+			ctx.drawImage(Resources.get(this.sprite), this.origin.x, this.origin.y);
 		}
 	};
 
@@ -249,27 +252,27 @@ var Models = {
 		var state = Engine.currentState();
 		var s = Engine.State; // enum
 		if (state === s.LEVEL_FROGGER || state === s.LEVEL_COLLECTOR) {
-			if (isValidMove(this.position.x, this.position.y, keyCode)) {
+			if (isValidMove(this.origin.x, this.origin.y, keyCode)) {
 		        switch (keyCode) {
 		            case 'left':
-		                this.position.x -= SPRITE_X_OFFSET;
+		                this.origin.x -= SPRITE_X_OFFSET;
 		                break;
 		            case 'up':
-		                this.position.y -= SPRITE_Y_OFFSET;
+		                this.origin.y -= SPRITE_Y_OFFSET;
 		                break;
 		            case 'right':
-		                this.position.x += SPRITE_X_OFFSET;
+		                this.origin.x += SPRITE_X_OFFSET;
 		                break;
 		            case 'down':
-		                this.position.y += SPRITE_Y_OFFSET;
+		                this.origin.y += SPRITE_Y_OFFSET;
 		                break;
 		            default:
 		                break;
 		        }
 		    }
 		    // TODO: Winning graphic and better experience of reset
-		    if (hasReachedTopRow(this.position.y)) {
-		    	this.position = this.initialConfig.position;
+		    if (hasReachedTopRow(this.origin.y)) {
+		    	this.origin = this.renderConfig.initialOrigin;
 		    }
 		}
 	};
