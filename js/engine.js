@@ -288,17 +288,18 @@
     *   @return the character type or undefined if the path is not defined
     */
     function characterType(sprite) {
+        var type = Models.CharacterType;
         switch (sprite) {
             case 'images/char-boy.png':
-                return Models.CharacterType.BOY;
+                return type.BOY;
             case 'images/char-cat-girl.png':
-                return Models.CharacterType.GIRL_CAT;
+                return type.GIRL_CAT;
             case 'images/char-horn-girl.png':
-                return Models.CharacterType.GIRL_HORN;
+                return type.GIRL_HORN;
             case 'images/char-pink-girl.png':
-                return Models.CharacterType.GIRL_PINK;
+                return type.GIRL_PINK;
             case 'images/char-princess-girl.png':
-                return Models.CharacterType.GIRL_PRINCESS;
+                return type.GIRL_PRINCESS;
             default:
                 return undefined;
         }

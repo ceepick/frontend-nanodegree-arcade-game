@@ -100,6 +100,7 @@ var Models = {
 	*	@constructor
 	*/
 	Models.Character = function(characterType) {
+		this.characterType = characterType;
 		this.sprite = spritePath(characterType);
 		this.spriteSize = {width: 101, height: 171};
 		this.spriteOffset = {x: 0, y: -30};
@@ -188,6 +189,13 @@ var Models = {
 	Models.Player = function(characterType) {
 		Models.Character.call(this, characterType);
 
+		this.State = {
+			PLAYING: 0,
+			WON: 1,
+			LOST: 2
+		},
+		this.state = this.State.PLAYING;
+
 		this.collisionOffset = {x: 30, y: 62};
 		this.collisionSize = {width: 40, height: 70};
 		Object.defineProperty(this, "initialOrigin", {
@@ -214,7 +222,7 @@ var Models = {
 		if (this.isOnCanvas()) {
 			var origin = this.origin;
 			ctx.drawImage(Resources.get(this.sprite), origin.x, origin.y);
-			if (!this.isMobile) {
+			if (this.state === this.State.WON) {
 				// prepare chat bubble and render
 		    	var chatBubbleSprite = Resources.get('images/obj-speech-bubble.png');
 		    	var size = this.collisionSize;
@@ -223,7 +231,9 @@ var Models = {
 		    	ctx.font = "20px VT323";
 		    	ctx.fillStyle = "black";
 		    	ctx.textAlign = "center";
-		    	ctx.fillText("No problem.", origin.x + this.spriteSize.width, origin.y + size.height);
+		    	var text = this.chatBubbleText(this.state);
+		    	console.log(text);
+		    	ctx.fillText(text, origin.x + this.spriteSize.width, origin.y + size.height);
 			}
 		}
 	};
@@ -244,6 +254,23 @@ var Models = {
 	    return true;
 	};
 
+	Models.Player.prototype.chatBubbleText = function(state) {
+		var types = Models.CharacterType;
+		switch (this.characterType) {
+			case types.BOY:
+				return "I h8 winning.";
+			case types.GIRL_CAT:
+				return "NYAN!!!";
+			case types.GIRL_HORN:
+				return "No problem.";
+			case types.GIRL_PINK:
+				return "*headbangs*";
+			case types.GIRL_PRINCESS:
+				return "Bless you!";
+			default:
+		}
+	};
+
 	/**
 	*	Handles keyboard input in order to move character around canvas.
 	*	@param keyCode the key pressed
@@ -252,7 +279,7 @@ var Models = {
 		var state = Engine.currentState();
 		var _ = Engine.State; // enum
 		if (state === _.LEVEL_FROGGER || state === _.LEVEL_COLLECTOR) {
-			if (this.isValidMove(keyCode) && this.isMobile) {
+			if (this.isValidMove(keyCode) && this.state === this.State.PLAYING) {
 				var origin = this.origin;
 				var blockOffset = this.blockOffset;
 		        switch (keyCode) {
@@ -271,16 +298,15 @@ var Models = {
 		            default:
 		                break;
 		        }
-		        console.log (origin.x, origin.y);
 		    }
 		    // TODO: Winning graphic and better experience of reset
 		    if (hasReachedTopRow(this.origin.y)) {
-		    	this.isMobile = false;
+		    	this.state = this.State.WON;
 		    	setTimeout(function() {
 		    		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 		    		this.origin = this.initialOrigin;
-		    		this.isMobile = true;
-		    	}.bind(this), 1000);
+		    		this.state = this.State.PLAYING;
+		    	}.bind(this), 1300);
 		    }
 		}
 	};
