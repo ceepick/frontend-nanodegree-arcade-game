@@ -16,10 +16,6 @@ var Menus = {
 		R: 'images/char-princess-girl.png',
 		_: null
 	},
-	ObjectSpriteUrl: {
-		C: 'images/obj-char-selector.png',
-		_: null
-	}
 };
 
 (function () {

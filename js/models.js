@@ -1,4 +1,4 @@
-// GLOBAL CONSTANTS
+// GLOBAL CONSTANTS - TODO: Remove with dynamic object properties
 
 const SPRITE_WIDTH = 101;
 const SPRITE_HEIGHT = 171;
@@ -104,6 +104,8 @@ var Models = {
 		this.spriteSize = {width: 101, height: 171};
 		this.spriteOffset = {x: 0, y: -30};
 		this.blockOffset = {x: 101, y: 83};
+
+		this.isMobile = true; // allows and prevents character to move on keyup
 	};
 
 	/**
@@ -210,7 +212,19 @@ var Models = {
 	*/	
 	Models.Player.prototype.render = function() {
 		if (this.isOnCanvas()) {
-			ctx.drawImage(Resources.get(this.sprite), this.origin.x, this.origin.y);
+			var origin = this.origin;
+			ctx.drawImage(Resources.get(this.sprite), origin.x, origin.y);
+			if (!this.isMobile) {
+				// prepare chat bubble and render
+		    	var chatBubbleSprite = Resources.get('images/obj-speech-bubble.png');
+		    	var size = this.collisionSize;
+		    	ctx.drawImage(chatBubbleSprite, origin.x + size.width, origin.y + size.height/2);
+		    	// prepare text and render
+		    	ctx.font = "20px VT323";
+		    	ctx.fillStyle = "black";
+		    	ctx.textAlign = "center";
+		    	ctx.fillText("No problem.", origin.x + this.spriteSize.width, origin.y + size.height);
+			}
 		}
 	};
 
@@ -238,7 +252,7 @@ var Models = {
 		var state = Engine.currentState();
 		var _ = Engine.State; // enum
 		if (state === _.LEVEL_FROGGER || state === _.LEVEL_COLLECTOR) {
-			if (this.isValidMove(keyCode)) {
+			if (this.isValidMove(keyCode) && this.isMobile) {
 				var origin = this.origin;
 				var blockOffset = this.blockOffset;
 		        switch (keyCode) {
@@ -257,10 +271,16 @@ var Models = {
 		            default:
 		                break;
 		        }
+		        console.log (origin.x, origin.y);
 		    }
 		    // TODO: Winning graphic and better experience of reset
 		    if (hasReachedTopRow(this.origin.y)) {
-		    	this.origin = this.initialOrigin;
+		    	this.isMobile = false;
+		    	setTimeout(function() {
+		    		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		    		this.origin = this.initialOrigin;
+		    		this.isMobile = true;
+		    	}.bind(this), 1000);
 		    }
 		}
 	};

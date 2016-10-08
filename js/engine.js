@@ -212,12 +212,13 @@
     *   @param menu the content data for a menu screen
     */
     function renderCharacterSelect(menu) {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         // draw scene
         renderLayer(menu.map, 0, 0);
         renderLayer(menu.characters, 0, SPRITE_Y_INITIAL_POSITION);
 
         // render text
-        ctx.font = "48px serif";
+        ctx.font = "54px VT323";
         ctx.fillStyle = "green";
         ctx.strokeStyle = "blue";
         ctx.textAlign = "center";
@@ -339,7 +340,7 @@
         'images/block-stone.png',
         'images/block-water.png',
         'images/block-grass.png',
-        'images/obj-char-selector.png',
+        'images/obj-speech-bubble.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
         'images/char-cat-girl.png',
