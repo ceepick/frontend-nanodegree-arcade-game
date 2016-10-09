@@ -14,7 +14,6 @@
  * a little simpler to work with.
  */
 
-// var Engine = (function(global) {
 (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -145,7 +144,9 @@
                 break;
             case State.LEVEL_FROGGER:
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                player = new Models.Player(metadata.characterType);
+                if (player === null) {
+                    player = new Models.Player(metadata.characterType);
+                }
                 break;
             case State.LEVEL_COLLECTOR:
                 break;
@@ -218,10 +219,7 @@
         renderLayer(menu.characters, 0, SPRITE_Y_INITIAL_POSITION);
 
         // render text
-        ctx.font = "54px VT323";
-        ctx.fillStyle = "green";
-        ctx.strokeStyle = "blue";
-        ctx.textAlign = "center";
+        ctx.font = "54px VT323", ctx.fillStyle = "green", ctx.strokeStyle = "blue", ctx.textAlign = "center";
         var x = ctx.canvas.width / 2;
         var y = ctx.canvas.height / 16;
         ctx.fillText("CHOOSE A TOON!", x, y)

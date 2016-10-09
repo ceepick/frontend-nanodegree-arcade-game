@@ -228,11 +228,8 @@ var Models = {
 		    	var size = this.collisionSize;
 		    	ctx.drawImage(chatBubbleSprite, origin.x + size.width, origin.y + size.height/2);
 		    	// prepare text and render
-		    	ctx.font = "20px VT323";
-		    	ctx.fillStyle = "black";
-		    	ctx.textAlign = "center";
+		    	ctx.font = "20px VT323", ctx.fillStyle = "black", ctx.textAlign = "center";
 		    	var text = this.chatBubbleText(this.state);
-		    	console.log(text);
 		    	ctx.fillText(text, origin.x + this.spriteSize.width, origin.y + size.height);
 			}
 		}
@@ -258,11 +255,11 @@ var Models = {
 		var types = Models.CharacterType;
 		switch (this.characterType) {
 			case types.BOY:
-				return "I h8 winning.";
+				return "I h8 winning";
 			case types.GIRL_CAT:
 				return "NYAN!!!";
 			case types.GIRL_HORN:
-				return "No problem.";
+				return "No problem";
 			case types.GIRL_PINK:
 				return "*headbangs*";
 			case types.GIRL_PRINCESS:
@@ -306,7 +303,7 @@ var Models = {
 		    		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 		    		this.origin = this.initialOrigin;
 		    		this.state = this.State.PLAYING;
-		    	}.bind(this), 1300);
+		    	}.bind(this), 1200);
 		    }
 		}
 	};
