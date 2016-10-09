@@ -1,0 +1,12 @@
+Code:
+- removal of all consts in preference of dynamic rendering
+- data mapping utils to reduce switch statement redundancy
+- explore moving collision detection to model character objects
+- creation of multiple canvas elements (formal rendering layers) for performance
+- explore pre-loading techniques for custom fonts
+- implement 'Gem Collector' level
+	- Determine branch logic for rendering loop
+
+Build Pipeline:
+- Tools or script to minify and compress javascript for deployment implementation/js dependencies
+	- require.js, grunt, bower
