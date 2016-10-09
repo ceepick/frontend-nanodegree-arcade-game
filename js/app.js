@@ -6,8 +6,6 @@ for (i = 0; i < numEnemies; ++i) {
 }
 var player = null; // user will pick character in menus
 
-// test
-
 // Listen for user input and call to handle player movement
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
