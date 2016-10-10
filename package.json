@@ -1,0 +1,20 @@
+{
+  "name": "frontend-nanodgree-arcade-game",
+  "version": "1.0.0",
+  "description": "Fork of Udacity FEND Arcade Game Project",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ceepick/frontend-nanodegree-arcade-game.git"
+  },
+  "author": "Cory Pickrel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ceepick/frontend-nanodegree-arcade-game/issues"
+  },
+  "homepage": "https://github.com/ceepick/frontend-nanodegree-arcade-game#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
