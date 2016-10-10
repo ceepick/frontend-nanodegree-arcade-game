@@ -100,10 +100,6 @@ var Models = {
 	*	@constructor
 	*/
 	Models.Character = function(characterType) {
-		if (!(this instanceof Character)) {
-			return new Models.Character(characterType);
-		}
-
 		this.characterType = characterType;
 		this.sprite = spritePath(characterType);
 		this.spriteSize = {width: 101, height: 171};
@@ -146,10 +142,6 @@ var Models = {
 	*	@constructor
 	*/
 	Models.Enemy = function(characterType) {
-		if (!(this instanceof Enemy)) {
-			return new Models.Enemy(characterType);
-		}
-
 		Models.Character.call(this, characterType);
 
 		this.collisionOffset = {x: 1, y: 77};
@@ -195,10 +187,6 @@ var Models = {
 	*	@constructor
 	*/	
 	Models.Player = function(characterType) {
-		if (!(this instanceof Player)) {
-			return new Models.Player(characterType);
-		}
-
 		Models.Character.call(this, characterType);
 
 		this.State = {
