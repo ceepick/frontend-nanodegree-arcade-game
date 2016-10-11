@@ -243,11 +243,13 @@
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
+        player.render(); // render player first so beatles "run over" player :P
+
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
 
-        player.render();
+        // player.render();
     }
 
     /* This function does nothing but it could have been a good place to

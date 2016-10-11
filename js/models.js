@@ -15,6 +15,7 @@ const LEFT_BOUNDS = 0;
 const UPPER_BOUNDS = -30;
 const RIGHT_BOUNDS = 404;
 const LOWER_BOUNDS = 385;
+const NON_MIDDLE_UPPER_BOUNDS = 53;
 
 /**
 *	Models incapulates the logic to create, update, render, and interact with Character objects.
@@ -106,7 +107,7 @@ var Models = {
 		this.spriteOffset = {x: 0, y: -30};
 		this.blockOffset = {x: 101, y: 83};
 
-		this.isMobile = true; // allows and prevents character to move on keyup
+		this.chatBubbleSprite = Resources.get('images/obj-speech-bubble.png');
 	};
 
 	/**
@@ -261,12 +262,10 @@ var Models = {
 			ctx.drawImage(Resources.get(this.sprite), origin.x, origin.y);
 			if (this.state === this.State.WON) {
 				// prepare chat bubble and render
-		    	var chatBubbleSprite = Resources.get('images/obj-speech-bubble.png');
 		    	var size = this.collisionSize;
-		    	ctx.drawImage(chatBubbleSprite, origin.x + size.width, origin.y + size.height/2);
+		    	ctx.drawImage(this.chatBubbleSprite, origin.x + size.width, origin.y + size.height/2);
 		    	// prepare text and render
-		    	var text = this.chatBubbleText();
-		    	ctx.fillText(text, origin.x + this.spriteSize.width, origin.y + size.height);
+		    	ctx.fillText(this.chatBubbleText(), origin.x + this.spriteSize.width, origin.y + size.height);
 			}
 		}
 	};
@@ -277,9 +276,11 @@ var Models = {
 	* 	@return true if valid move, false if invalid move
 	*/
 	Models.Player.prototype.isValidMove = function(keyCode) {
+		// TODO: more dynamic, remove dependence on consts
 		var x = this.origin.x, y = this.origin.y;
 		if (keyCode === "left" && x === LEFT_BOUNDS || // edge left
 	        keyCode === "up" && y === UPPER_BOUNDS || // edge top
+	        keyCode === "up" && x !== this.blockOffset.x * 2 && y === NON_MIDDLE_UPPER_BOUNDS || // middle, 1 block down
 	        keyCode === "right" && x === RIGHT_BOUNDS || // edge right
 	        keyCode === "down" && y === LOWER_BOUNDS) { // edge bottom
 	        return false;
