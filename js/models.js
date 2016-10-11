@@ -215,7 +215,7 @@ var Models = {
         lPercentComplete = null,
         lInitialPosition = null;
 
-    var getNewPosition = (initPos, endPos, percent) => {
+    var getNewPosition = function(initPos, endPos, percent) {
     	var dx = endPos.x - initPos.x,
     		dy = endPos.y - initPos.y;
     	return {
