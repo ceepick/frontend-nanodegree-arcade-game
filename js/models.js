@@ -193,7 +193,7 @@ var Models = {
 		this.State = {
 			PLAYING: 0,
 			WON: 1,
-			LOST: 2
+			RESET: 3
 		},
 		this.state = this.State.PLAYING;
 
@@ -229,24 +229,30 @@ var Models = {
 			ctx.font = "20px VT323", ctx.fillStyle = "black", ctx.textAlign = "center";
 		}
 		// Animate player back to start upon collision
-		else if (this.state === this.State.LOST) {
-			var now = Date.now();
-			// Start animation
-			if (lInitialTime === null) {
-				// set initial time and initial position for progress calculations
-				lInitialTime = now;
-				lInitialPosition = this.origin;
+		else if (this.state === this.State.RESET) {
+			this.updateResetAnimation();
+		}
+	};
+
+	Models.Player.prototype.updateResetAnimation = function() {
+		// clear canvas to avoid render behind game board when transitioning from State.WON
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		var now = Date.now();
+		// start animation
+		if (lInitialTime === null) {
+			// set initial time and initial position for progress calculations
+			lInitialTime = now;
+			lInitialPosition = this.origin;
+		} else {
+			lPercentComplete = ((now - lInitialTime)) / lAnimationDuration;
+			// update position on path until duration reached
+			if (lPercentComplete <= 1) {
+				this.origin = getNewPosition(lInitialPosition, this.initialOrigin, lPercentComplete);
 			} else {
-				lPercentComplete = ((now - lInitialTime)) / lAnimationDuration;
-				// update position on path until duration reached
-				if (lPercentComplete <= 1) {
-					this.origin = getNewPosition(lInitialPosition, this.initialOrigin, lPercentComplete);
-				} else {
-					// reset state for next collision animation, assign final position
-					this.state = this.State.PLAYING;
-					lInitialTime = lPercentComplete = lInitialPosition = null;
-					this.origin = this.initialOrigin;
-				}
+				// reset state for next collision animation, assign final position
+				this.state = this.State.PLAYING;
+				lInitialTime = lPercentComplete = lInitialPosition = null;
+				this.origin = this.initialOrigin;
 			}
 		}
 	};
@@ -337,9 +343,7 @@ var Models = {
 		    if (hasReachedTopRow(this.origin.y)) {
 		    	this.state = this.State.WON;
 		    	setTimeout(function() {
-		    		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-		    		this.origin = this.initialOrigin;
-		    		this.state = this.State.PLAYING;
+		    		this.state = this.State.RESET;
 		    	}.bind(this), 1200);
 		    }
 		}

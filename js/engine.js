@@ -182,9 +182,9 @@
         var enemyRect;
         allEnemies.forEach(function(enemy) {
             enemyRect = enemy.rect();
-            if (isCollision(playerRect, enemyRect)) {
+            if (player.state === player.State.PLAYING && isCollision(playerRect, enemyRect)) {
                 // collision detected, animate player to initial position
-                player.state = player.State.LOST;
+                player.state = player.State.RESET;
             }
         });
     }
