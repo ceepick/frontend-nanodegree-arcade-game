@@ -164,7 +164,7 @@ var Models = {
 	*/
 	Models.Enemy.prototype.update = function(dt) {
 		// Multiply by dt for normalization
-		this.origin.x += (this.spriteSize.width * this.velocity) * dt;
+		this.origin.x += this.spriteSize.width * this.velocity * dt;
 	};
 
 	/**
@@ -209,8 +209,45 @@ var Models = {
 	};
 	Models.Player.prototype = Object.create(Models.Character.prototype);
 
+	var lAnimationDuration = 300, // ms === 1.3s
+		lInitialTime = null,
+        lPercentComplete = null,
+        lInitialPosition = null;
+
+    var getNewPosition = (initPos, endPos, percent) => {
+    	var dx = endPos.x - initPos.x,
+    		dy = endPos.y - initPos.y;
+    	return {
+    		x: initPos.x + (dx * percent),
+    		y: initPos.y + (dy * percent)
+    	}
+    }
+
 	Models.Player.prototype.update = function(dt) {
-		// TODO? handle input seems to handle updating of character
+		if (this.state === this.State.WON) {
+			ctx.font = "20px VT323", ctx.fillStyle = "black", ctx.textAlign = "center";
+		}
+		// Animate player back to start upon collision
+		else if (this.state === this.State.LOST) {
+			var now = Date.now();
+			// Start animation
+			if (lInitialTime === null) {
+				// set initial time and initial position for progress calculations
+				lInitialTime = now;
+				lInitialPosition = this.origin;
+			} else {
+				lPercentComplete = ((now - lInitialTime)) / lAnimationDuration;
+				// update position on path until duration reached
+				if (lPercentComplete <= 1) {
+					this.origin = getNewPosition(lInitialPosition, this.initialOrigin, lPercentComplete);
+				} else {
+					// reset state for next collision animation, assign final position
+					this.state = this.State.PLAYING;
+					lInitialTime = lPercentComplete = lInitialPosition = null;
+					this.origin = this.initialOrigin;
+				}
+			}
+		}
 	};
 
 	/**
@@ -228,8 +265,7 @@ var Models = {
 		    	var size = this.collisionSize;
 		    	ctx.drawImage(chatBubbleSprite, origin.x + size.width, origin.y + size.height/2);
 		    	// prepare text and render
-		    	ctx.font = "20px VT323", ctx.fillStyle = "black", ctx.textAlign = "center";
-		    	var text = this.chatBubbleText(this.state);
+		    	var text = this.chatBubbleText();
 		    	ctx.fillText(text, origin.x + this.spriteSize.width, origin.y + size.height);
 			}
 		}
@@ -251,7 +287,7 @@ var Models = {
 	    return true;
 	};
 
-	Models.Player.prototype.chatBubbleText = function(state) {
+	Models.Player.prototype.chatBubbleText = function() {
 		var types = Models.CharacterType;
 		switch (this.characterType) {
 			case types.BOY:
