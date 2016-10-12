@@ -1,5 +1,5 @@
 body {
-    text-align: center;
+    text-align: center; /* center the game board */
     background-color: lightgray;
     font-family: 'VT323', monospace;
 }

@@ -12,8 +12,14 @@ var Levels = {
 
 (function () {
 
-	// CLASSES
+	/**
+	*	OBJECTS
+	*/
 
+	/**
+	*	Map for the Frogger game level.
+	*	@constructor
+	*/
 	Levels.Frogger = function() {
 		var _ = Levels.MapSpriteUrl;
 		this.map = {
@@ -30,7 +36,11 @@ var Levels = {
 		};
 	};
 
-	Levels.Collector = function() {
+	/**
+	*	Map for the Gem Cellector game level.
+	*	@constructor
+	*/
+	Levels.GemCollector = function() {
 		var _ = Levels.MapSpriteUrl;
 		this.map = {
 			images: [

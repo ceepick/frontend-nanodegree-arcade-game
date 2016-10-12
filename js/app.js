@@ -1,3 +1,7 @@
+/**
+*   INITIALIZATION
+*/
+
 // Create Enemies and Players
 var numEnemies = 4;
 var allEnemies = [];
@@ -5,6 +9,11 @@ for (i = 0; i < numEnemies; ++i) {
     allEnemies.push(new Models.Enemy(Models.CharacterType.BUG));
 }
 var player = null; // user will pick character in menus
+
+
+/**
+*   EVENT LISTENERS
+*/
 
 // Listen for user input and call to handle player movement
 document.addEventListener('keyup', function(e) {

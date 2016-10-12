@@ -1,9 +1,17 @@
+/** 
+*   IMPORTS
+*/
+
 var gulp = require('gulp'),
     gp_concat = require('gulp-concat'),
     gp_rename = require('gulp-rename'),
     gp_uglify = require('gulp-uglify'),
     del = require('del'),
     runSequence = require('run-sequence');
+
+/**
+*   TASKS
+*/
 
 // Concat files | Minify
 gulp.task('minicat', function() {
@@ -15,6 +23,13 @@ gulp.task('minicat', function() {
         .pipe(gulp.dest('dist'));
 });
 
+// Remove all files from dist directory
+gulp.task('clean-dist-concat', function() {
+    return del([
+        'dist/*.js'
+    ]);
+});
+
 // Remove concat.js after minicat runs
 gulp.task('clean-dist-concat', function() {
     return del([
@@ -22,12 +37,15 @@ gulp.task('clean-dist-concat', function() {
     ]);
 });
 
-// Run tasks sequentially
-gulp.task('tasks', function(done) {
+/*
+*   CONCATENATION + MINIFICATION SEQUENCE ['minicat', 'clean-dist-concat']
+*   Use to create distribution app.min.js file
+*/
+gulp.task('minicat-seq', function(done) {
     runSequence('minicat', 'clean-dist-concat', function() {
         done();
     });
 });
 
-
-gulp.task('default', ['tasks'], function(){});
+// Runs on gulp without arguments
+gulp.task('default', ['minicat-seq'], function(){});

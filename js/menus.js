@@ -20,8 +20,14 @@ var Menus = {
 
 (function () {
 
-	// CLASSES
+	/**
+	*	OBJECTS
+	*/
 
+	/**
+	*	Map and Character Sprites for the Character Select menu.
+	*	@constructor
+	*/
 	Menus.CharacterSelect = function() {
 		var _ = Menus.MapSpriteUrl;
 		this.map = {

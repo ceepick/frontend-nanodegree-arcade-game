@@ -28,19 +28,20 @@
     // Cache menus and levels to prevent redeclaration in rendering loop
     var characterSelectMenu = new Menus.CharacterSelect(),
         froggerLevel = new Levels.Frogger(),
-        collectorLevel = new Levels.Collector();
+        gemCollectorLevel = new Levels.GemCollector();
 
-    // State enum to transition between different screens on the game
+    // State enum to transition between different screens in the game
     var State = {
         MENU_CHARACTER_SELECT: 1,
         LEVEL_FROGGER: 2,
-        LEVEL_COLLECTOR: 3
+        LEVEL_GEM_COLLECTOR: 3
     }
     var state = State.MENU_CHARACTER_SELECT; // initial state
     
     // This object is used to assist in the selection of a character
     var characterSelectSpriteInfo = populateCharacterSelectInfo(characterSelectMenu);
 
+    // define canvas dimensions and append to document body
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
@@ -59,8 +60,8 @@
             dt = (now - lastTime) / 1000.0;
 
 
-         /* Call our update/render functions, pass along the time delta to
-         * our update function since it may be used for smooth animation.
+         /* Call our update/render functions dependent on game stats, pass along the time
+         *  delta if needed to our update function since it may be used for smooth animation.
          */
         switch (state) {
             case State.MENU_CHARACTER_SELECT:
@@ -91,7 +92,7 @@
      * game loop.
      */
     function init() {
-        reset(); // TODO
+        reset(); // TODO if needed
         lastTime = Date.now();
         main();
     }
@@ -122,6 +123,57 @@
             enemy.update(dt);
         });
         player.update();
+    }
+
+    /**
+    *   Convenience function to determine which character type corresonds to a particular sprite.
+    *   @param sprite the character sprite that was selected
+    *   @return the character type or undefined if the path is not defined
+    */
+    function characterType(sprite) {
+        var type = Models.CharacterType;
+        switch (sprite) {
+            case 'images/char-boy.png':
+                return type.BOY;
+            case 'images/char-cat-girl.png':
+                return type.GIRL_CAT;
+            case 'images/char-horn-girl.png':
+                return type.GIRL_HORN;
+            case 'images/char-pink-girl.png':
+                return type.GIRL_PINK;
+            case 'images/char-princess-girl.png':
+                return type.GIRL_PRINCESS;
+            default:
+                return undefined;
+        }
+    }
+
+    /**
+    *   Convenience function that generates an array of character sprite info.
+    *   The application caches this information to use for character selection.
+    *   @param characterSelectMenu the content data for the character select menu screen
+    *   @return an object that contains the character type and location information of the sprite
+    */
+    function populateCharacterSelectInfo(characterSelectMenu) {
+        var spriteInfos = [];
+        var chars = characterSelectMenu.characters;
+        for (row = 0; row < chars.numRows; ++row) {
+            for (col = 0; col < chars.numCols; ++col) {
+                var sprite = chars.images[row][col];
+                if (sprite !== null) {
+                    spriteInfos.push({
+                        characterType: characterType(sprite),
+                        collisionRect: {
+                            x: col * Models.SPRITE_WIDTH,
+                            y: row * Models.SPRITE_Y_OFFSET - Models.SPRITE_Y_INITIAL_POSITION,
+                            width: Models.SPRITE_WIDTH,
+                            height: Models.PLAYER_SPRITE_COLLISION_HEIGHT
+                        }
+                    });
+                }
+            }
+        }
+        return spriteInfos;
     }
 
     /**
@@ -177,11 +229,11 @@
     */
     // TODO - animate char before reset
     function checkCollisions() {
-        var playerRect = player.rect();
+        var playerRect = player.collisionRect();
 
         var enemyRect;
         allEnemies.forEach(function(enemy) {
-            enemyRect = enemy.rect();
+            enemyRect = enemy.collisionRect();
             if (player.state === player.State.PLAYING && isCollision(playerRect, enemyRect)) {
                 // collision detected, animate player to initial position
                 player.state = player.State.RESET;
@@ -216,7 +268,7 @@
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         // draw scene
         renderLayer(menu.map, 0, 0);
-        renderLayer(menu.characters, 0, SPRITE_Y_INITIAL_POSITION);
+        renderLayer(menu.characters, 0, Models.SPRITE_Y_INITIAL_POSITION);
 
         // render text
         ctx.font = "54px VT323", ctx.fillStyle = "green", ctx.strokeStyle = "blue", ctx.textAlign = "center";
@@ -257,7 +309,7 @@
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+        // noop - possible TODO
     }
 
     /**
@@ -275,62 +327,11 @@
         if (state === State.MENU_CHARACTER_SELECT) {
             var clickRect = {x: x, y: y, width: 1, height: 1};
             characterSelectSpriteInfo.forEach(function(spriteInfo) {
-                if (isCollision(clickRect, spriteInfo.rect)) {
+                if (isCollision(clickRect, spriteInfo.collisionRect)) {
                     changeState(State.LEVEL_FROGGER, {characterType: spriteInfo.characterType}); // TODO: Dynamic game selection
                 }
             });       
         }
-    }
-
-    /**
-    *   Convenience function to determine which character type corresonds to a particular sprite.
-    *   @param sprite the character sprite that was selected
-    *   @return the character type or undefined if the path is not defined
-    */
-    function characterType(sprite) {
-        var type = Models.CharacterType;
-        switch (sprite) {
-            case 'images/char-boy.png':
-                return type.BOY;
-            case 'images/char-cat-girl.png':
-                return type.GIRL_CAT;
-            case 'images/char-horn-girl.png':
-                return type.GIRL_HORN;
-            case 'images/char-pink-girl.png':
-                return type.GIRL_PINK;
-            case 'images/char-princess-girl.png':
-                return type.GIRL_PRINCESS;
-            default:
-                return undefined;
-        }
-    }
-
-    /**
-    *   Convenience function that generates an array of character sprite info.
-    *   The application caches this information to use for character selection.
-    *   @param characterSelectMenu the content data for the character select menu screen
-    *   @return an object that contains the character type and location information of the sprite
-    */
-    function populateCharacterSelectInfo(characterSelectMenu) {
-        var spriteInfos = [];
-        var chars = characterSelectMenu.characters;
-        for (row = 0; row < chars.numRows; ++row) {
-            for (col = 0; col < chars.numCols; ++col) {
-                var sprite = chars.images[row][col];
-                if (sprite !== null) {
-                    spriteInfos.push({
-                        characterType: characterType(sprite),
-                        rect: {
-                            x: col * SPRITE_WIDTH,
-                            y: row * SPRITE_Y_OFFSET - SPRITE_Y_INITIAL_POSITION,
-                            width: SPRITE_WIDTH,
-                            height: PLAYER_SPRITE_COLLISION_HEIGHT
-                        }
-                    });
-                }
-            }
-        }
-        return spriteInfos;
     }
 
     /* Go ahead and load all of the images we know we're going to need to

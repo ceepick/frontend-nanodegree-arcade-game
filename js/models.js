@@ -1,22 +1,3 @@
-// GLOBAL CONSTANTS - TODO: Remove with dynamic object properties
-
-const SPRITE_WIDTH = 101;
-const SPRITE_HEIGHT = 171;
-
-const SPRITE_Y_INITIAL_POSITION = -30;
-const SPRITE_Y_OFFSET = 83;
-
-const PLAYER_SPRITE_COLLISION_X_OFFSET = 30; 	// exact box: 17
-const PLAYER_SPRITE_COLLISION_Y_OFFSET = 62; 	// exact box: 62
-const PLAYER_SPRITE_COLLISION_WIDTH = 40; 		// exact box: 67
-const PLAYER_SPRITE_COLLISION_HEIGHT = 76;
-
-const LEFT_BOUNDS = 0;
-const UPPER_BOUNDS = -30;
-const RIGHT_BOUNDS = 404;
-const LOWER_BOUNDS = 385;
-const NON_MIDDLE_UPPER_BOUNDS = 53;
-
 /**
 *	Models incapulates the logic to create, update, render, and interact with Character objects.
 */
@@ -29,12 +10,42 @@ var Models = {
 	    GIRL_PINK: 3,
 	    GIRL_PRINCESS: 4,
 	    BUG: 5
+	},
+	// These are duplicated to reduce the load on the menu screen.
+	// I.e. we don't create player objects, just provide enough 
+	// information to render the sprites for character selection.
+	get SPRITE_WIDTH() {
+		return 101
+	},
+	get SPRITE_Y_INITIAL_POSITION() {
+		return -30
+	},
+	get SPRITE_Y_OFFSET() {
+		return 83
+	},
+	get PLAYER_SPRITE_COLLISION_HEIGHT() {
+		return 76
 	}
 };
 
 (function () {
 
-	// PRIVATE UTILS
+	// I'm being lazy here for now. Future state is the Player Model generates these dynamically.
+	const LEFT_BOUNDS = 0;
+	const UPPER_BOUNDS = -30;
+	const RIGHT_BOUNDS = 404;
+	const LOWER_BOUNDS = 385;
+	const NON_MIDDLE_UPPER_BOUNDS = 53;
+
+	// Determine if this should exist in a finer scope
+	var lAnimationDuration = 300, // 0.3s
+	lInitialTime = null,
+    lPercentComplete = null,
+    lInitialPosition = null;
+
+	/**
+	*	PRIVATE UTILS
+	*/
 
 	/**
 	*	Generates random integer in min/max range inclusive.
@@ -93,7 +104,18 @@ var Models = {
         return imagePath;
     };
 
-	// CLASSES
+    var getNewPosition = function(initPos, endPos, percent) {
+    	var dx = endPos.x - initPos.x,
+    		dy = endPos.y - initPos.y;
+    	return {
+    		x: initPos.x + (dx * percent),
+    		y: initPos.y + (dy * percent)
+    	}
+    }
+
+	/**
+	*	PROTOTYPAL OBJECTS
+	*/
 
 	/**
 	*	Character base class. Currently only used to provide sprite.
@@ -111,9 +133,10 @@ var Models = {
 	};
 
 	/**
-	*
+	*	Returns the rect of the sprite to be used in collision detection.
+	*	@return rect that fits the character dimensions in the sprite rect
 	*/
-	Models.Character.prototype.rect = function() {
+	Models.Character.prototype.collisionRect = function() {
 		return {
 			x: this.origin.x + this.collisionOffset.x, 
 			y: this.origin.y + this.collisionOffset.y,
@@ -210,20 +233,6 @@ var Models = {
 	};
 	Models.Player.prototype = Object.create(Models.Character.prototype);
 
-	var lAnimationDuration = 300, // ms === 1.3s
-		lInitialTime = null,
-        lPercentComplete = null,
-        lInitialPosition = null;
-
-    var getNewPosition = function(initPos, endPos, percent) {
-    	var dx = endPos.x - initPos.x,
-    		dy = endPos.y - initPos.y;
-    	return {
-    		x: initPos.x + (dx * percent),
-    		y: initPos.y + (dy * percent)
-    	}
-    }
-
 	Models.Player.prototype.update = function(dt) {
 		if (this.state === this.State.WON) {
 			ctx.font = "20px VT323", ctx.fillStyle = "black", ctx.textAlign = "center";
@@ -294,6 +303,10 @@ var Models = {
 	    return true;
 	};
 
+	/**
+	*	Determines which text string should be displayed for the player winning the level.
+	*	@return appropriate string or an empty string for an undefined player
+	*/
 	Models.Player.prototype.chatBubbleText = function() {
 		var types = Models.CharacterType;
 		switch (this.characterType) {
@@ -308,6 +321,7 @@ var Models = {
 			case types.GIRL_PRINCESS:
 				return "Bless you!";
 			default:
+				return "";
 		}
 	};
 
