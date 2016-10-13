@@ -54,7 +54,7 @@ var Models = {
 	*	@param max inclusive max value
 	* 	@return random integer value
 	*/
-	var getRandomInt = function(min, max) {
+	function getRandomInt(min, max) {
 	    min = Math.ceil(min);
 	    max = Math.floor(max);
 	    return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -66,7 +66,7 @@ var Models = {
 	*	@param yCoordinate the current y-axis coordinate of the player sprite
 	*	@return true if on the top row, false if not on the top row
 	*/
-	var hasReachedTopRow = function(yCoordinate) {
+	function hasReachedTopRow(yCoordinate) {
 		return (yCoordinate === UPPER_BOUNDS) ? true : false;
 	};
 
@@ -76,7 +76,7 @@ var Models = {
 	*	@param characterType enumeration value
 	* 	@return path of image asset
 	*/
-	var spritePath = function(characterType) {
+	function spritePath(characterType) {
 		var imagePath;
 		// assignment/breaks chosen over straight returns for convention and future customization if needed
         switch (characterType) {
@@ -104,7 +104,7 @@ var Models = {
         return imagePath;
     };
 
-    var getNewPosition = function(initPos, endPos, percent) {
+    function getNewPosition(initPos, endPos, percent) {
     	var dx = endPos.x - initPos.x,
     		dy = endPos.y - initPos.y;
     	return {
@@ -174,7 +174,7 @@ var Models = {
 			get: function() {
 				var x = -this.blockOffset.x; // offscreen 1 grid position
 				var y = this.spriteOffset.y + (this.blockOffset.y * getRandomInt(1, 3));
-				return {x: x, y: y};
+				return {x, y};
 			}
 		});
 	    this.origin = this.initialOrigin;
@@ -226,7 +226,7 @@ var Models = {
 			get: function() {
 				var x = this.blockOffset.x * 2;
 		    	var y = this.spriteOffset.y + (this.blockOffset.y * 5);
-		    	return {x: x, y: y};
+		    	return {x, y};
 		    }
 		});
 		this.origin = this.initialOrigin;
@@ -356,9 +356,9 @@ var Models = {
 		    // TODO: Winning graphic and better experience of reset
 		    if (hasReachedTopRow(this.origin.y)) {
 		    	this.state = this.State.WON;
-		    	setTimeout(function() {
+		    	setTimeout( () => {
 		    		this.state = this.State.RESET;
-		    	}.bind(this), 1200);
+		    	}, 1200);
 		    }
 		}
 	};

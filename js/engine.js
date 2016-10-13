@@ -119,7 +119,7 @@
      * render methods.
      */
     function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
+        allEnemies.forEach(enemy => {
             enemy.update(dt);
         });
         player.update();
@@ -232,7 +232,7 @@
         var playerRect = player.collisionRect();
 
         var enemyRect;
-        allEnemies.forEach(function(enemy) {
+        allEnemies.forEach(enemy => {
             enemyRect = enemy.collisionRect();
             if (player.state === player.State.PLAYING && isCollision(playerRect, enemyRect)) {
                 // collision detected, animate player to initial position
@@ -297,7 +297,7 @@
          */
         player.render(); // render player first so beatles "run over" player :P
 
-        allEnemies.forEach(function(enemy) {
+        allEnemies.forEach(enemy => {
             enemy.render();
         });
 
@@ -326,7 +326,7 @@
         // Determine which character has been selected and change state to the selected game
         if (state === State.MENU_CHARACTER_SELECT) {
             var clickRect = {x: x, y: y, width: 1, height: 1};
-            characterSelectSpriteInfo.forEach(function(spriteInfo) {
+            characterSelectSpriteInfo.forEach(spriteInfo => {
                 if (isCollision(clickRect, spriteInfo.collisionRect)) {
                     changeState(State.LEVEL_FROGGER, {characterType: spriteInfo.characterType}); // TODO: Dynamic game selection
                 }
