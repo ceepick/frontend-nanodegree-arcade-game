@@ -5,6 +5,7 @@
 // Create Enemies and Players
 var numEnemies = 4;
 var allEnemies = [];
+var i;
 for (i = 0; i < numEnemies; ++i) {
     allEnemies.push(new Models.Enemy(Models.CharacterType.BUG));
 }

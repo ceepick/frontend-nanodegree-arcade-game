@@ -17,7 +17,7 @@ var gulp = require('gulp'),
 // Concat files | Minify
 gulp.task('minicat', function() {
     return gulp.src(['js/resources.js', 'js/menus.js', 'js/levels.js', 'js/models.js', 'js/app.js', 'js/engine.js'])
-        .pipe(gp_babel({presets: ['es2015']}))
+        .pipe(gp_babel({presets: ['es2015-script']}))
         .pipe(gp_concat('concat.js'))
         .pipe(gulp.dest('dist'))
         .pipe(gp_rename('app.min.js'))

@@ -157,6 +157,7 @@
     function populateCharacterSelectInfo(characterSelectMenu) {
         var spriteInfos = [];
         var chars = characterSelectMenu.characters;
+        var row, col;
         for (row = 0; row < chars.numRows; ++row) {
             for (col = 0; col < chars.numCols; ++col) {
                 var sprite = chars.images[row][col];
@@ -250,6 +251,7 @@
     *   @param yOffset the number of pixels to offset the y-axis coordinate
     */
     function renderLayer(layer, xOffset, yOffset) {
+        var row, col;
         for (row = 0; row < layer.numRows; ++row) {
             for (col = 0; col < layer.numCols; ++col) {
                 var sprite = layer.images[row][col];
