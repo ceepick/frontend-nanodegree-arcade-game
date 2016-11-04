@@ -29,11 +29,6 @@ var Models = {
 };
 
 (function () {
-
-	// I'm being lazy here for now. Future state is the Player Model generates these dynamically.
-	const UPPER_BOUNDS = -30;
-	const LOWER_BOUNDS = 385;
-
 	// Determine if this should exist in a finer scope
 	var lAnimationDuration = 300, // 0.3s
 	lInitialTime = null,
@@ -143,7 +138,7 @@ var Models = {
 	Models.Character.prototype.isOnCanvas = function() {
 		var x = this.origin.x, y = this.origin.y;
 		if ((x > -this.spriteSize.width && x < ctx.canvas.width) && // horizontal bounds
-			(y >= UPPER_BOUNDS && y <= LOWER_BOUNDS)) { // vertical bounds
+			(y >= (-30) && y <= ((froggerLevel.map.images.length - 1) * this.blockOffset.y) - 30)) { // vertical bounds
 	        return true;
 	    } else {
 	        return false;
@@ -286,20 +281,20 @@ var Models = {
 			y = (this.origin.y + 30)/this.blockOffset.y;
 		// inc/dec x or y
 		switch (keyCode) {
-        case 'left':
-        	x -= 1;
-            break;
-        case 'up':
-        	y -= 1;
-            break;
-        case 'right':
-        	x += 1;
-            break;
-        case 'down':
-        	y += 1;
-            break;
-        default:
-            break;
+	        case 'left':
+	        	x -= 1;
+	            break;
+	        case 'up':
+	        	y -= 1;
+	            break;
+	        case 'right':
+	        	x += 1;
+	            break;
+	        case 'down':
+	        	y += 1;
+	            break;
+	        default:
+	            break;
         }
 		// check boundaries
 		if (x < 0 || x > 4 || y < 0 || y > 5) {
