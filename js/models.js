@@ -151,7 +151,7 @@ var Models = {
 	};
 
 	/**
-	*	Enemies our player must avoid.
+	*	Enemy base object.
 	*	@param characterType enumeration value that signals proper configuration
 	*	@constructor
 	*/
@@ -160,14 +160,6 @@ var Models = {
 
 		this.collisionOffset = {x: 1, y: 77};
 		this.collisionSize = {width: 98, height: 66};
-		Object.defineProperty(this, "initialOrigin", {
-			get: function() {
-				var x = -this.blockOffset.x; // offscreen 1 grid position
-				var y = this.spriteOffset.y + (this.blockOffset.y * getRandomInt(1, 3));
-				return {x, y};
-			}
-		});
-	    this.origin = this.initialOrigin;
 	    this.velocity = getRandomInt(1,6);
 	};
 	Models.Enemy.prototype = Object.create(Models.Character.prototype);
@@ -194,6 +186,26 @@ var Models = {
 	        this.velocity = getRandomInt(1,6);
 	    }
 	};
+
+	/**
+	*	Frogger enemy.
+	*	@param characterType enumeration value that signals proper configuration
+	* 	@constructor
+	*/
+	Models.FroggerEnemy = function(characterType) {
+		Models.Enemy.call(this, characterType);
+
+		Object.defineProperty(this, "initialOrigin", {
+			get: function() {
+				var x = -this.blockOffset.x; // offscreen 1 grid position
+				var y = this.spriteOffset.y + (this.blockOffset.y * getRandomInt(1, 3));
+				return {x, y};
+			}
+		});
+
+		this.origin = this.initialOrigin;
+	};
+	Models.FroggerEnemy.prototype = Object.create(Models.Enemy.prototype);
 
 	/**
 	*	Player character base object.
