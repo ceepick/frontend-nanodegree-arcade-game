@@ -89,6 +89,13 @@ var Models = {
         return imagePath;
     };
 
+    /**
+    *	Determines next position for character animation.
+    *	This function is used when a player loses or wins to animate them back to initial position.
+    *	@param initPos initial position for animation
+    *	@param endPos final position for animation
+    *	@param percent complete for animation
+    */
     function getNewPosition(initPos, endPos, percent) {
     	var dx = endPos.x - initPos.x,
     		dy = endPos.y - initPos.y;
@@ -270,15 +277,23 @@ var Models = {
 		}
 	};
 
+	Models.Player.prototype.mapLocationIndices = function() {
+		return {
+			x: this.origin.x/this.blockOffset.x,
+			y: (this.origin.y + 30)/this.blockOffset.y
+		}
+	};
+
 	/**
 	*	Determines if sprite should be able to move in a particular direction on the canvas.
 	*	@param keyCode code associated with key press
 	* 	@return true if valid move, false if invalid move
 	*/
 	Models.Player.prototype.isValidMove = function(keyCode) {
-		// determine current x,y indices
-		var x = this.origin.x/this.blockOffset.x,
-			y = (this.origin.y + 30)/this.blockOffset.y;
+		var indices = this.mapLocationIndices();
+		var x = indices.x,
+			y = indices.y;
+
 		// inc/dec x or y
 		switch (keyCode) {
 	        case 'left':
@@ -315,10 +330,8 @@ var Models = {
 	*	@return true if on the winning square, false if not on the winning square
 	*/
 	Models.Player.prototype.isWinningMove = function() {
-		// determine current x,y indices
-		var x = this.origin.x/this.blockOffset.x,
-			y = (this.origin.y + 30)/this.blockOffset.y;
-		return (x === 2 && y === 0) ? true : false;
+		var indices = this.mapLocationIndices();
+		return (indices.x === 2 && indices.y === 0) ? true : false;
 	};
 
 	/**
