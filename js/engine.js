@@ -338,8 +338,8 @@
             var clickRect = {x: x, y: y, width: 1, height: 1};
             characterSelectSpriteInfo.forEach(spriteInfo => {
                 if (isCollision(clickRect, spriteInfo.collisionRect)) {
-                    // changeState(State.LEVEL_FROGGER, {characterType: spriteInfo.characterType}); // TODO: Dynamic game selection
-                    changeState(State.LEVEL_GEM_COLLECTOR, {characterType: spriteInfo.characterType}); // TODO: Dynamic game selection
+                    changeState(State.LEVEL_FROGGER, {characterType: spriteInfo.characterType}); // TODO: Dynamic game selection
+                    // changeState(State.LEVEL_GEM_COLLECTOR, {characterType: spriteInfo.characterType}); // TODO: Dynamic game selection
                 }
             });       
         }

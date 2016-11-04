@@ -370,13 +370,6 @@ var Models = {
 		                break;
 		        }
 		    }
-
-		    if (this.isWinningMove()) {
-		    	this.state = this.State.WON;
-		    	setTimeout( () => {
-		    		this.state = this.State.RESET;
-		    	}, 1200);
-		    }
 		}
 	};
 
@@ -447,6 +440,21 @@ var Models = {
 	Models.FroggerPlayer.prototype.isWinningMove = function() {
 		var indices = this.mapLocationIndices();
 		return (indices.x === 2 && indices.y === 0) ? true : false;
+	};
+
+		/**
+	*	Handles keyboard input in order to move character around canvas.
+	*	@param keyCode the key pressed
+	*/	
+	Models.FroggerPlayer.prototype.handleInput = function(keyCode) {
+		Models.Player.prototype.handleInput.call(this, keyCode);
+
+	    if (this.isWinningMove()) {
+	    	this.state = this.State.WON;
+	    	setTimeout( () => {
+	    		this.state = this.State.RESET;
+	    	}, 1200);
+	    }
 	};
 
 	/**
