@@ -25,6 +25,26 @@ var Menus = {
 	*/
 
 	/**
+	*	Map for Game Select menu.
+	*	@constructor
+	*/
+	Menus.GameSelect = function() {
+		var _ = Menus.MapSpriteUrl;
+		this.map = {
+			images: [
+				[_.S, _.S, _.S, _.S, _.S],
+	        	[_.S, _.W, _.W, _.W, _.S],
+	        	[_.S, _.S, _.S, _.S, _.S],
+	        	[_.S, _.S, _.S, _.S, _.S],
+				[_.S, _.G, _.G, _.G, _.S],
+				[_.S, _.S, _.S, _.S, _.S],
+			],
+			numRows: 6,
+			numCols: 5
+		};
+	};	
+
+	/**
 	*	Map and Character Sprites for the Character Select menu.
 	*	@constructor
 	*/

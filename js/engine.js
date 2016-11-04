@@ -26,21 +26,33 @@
         lastTime;
 
     // Cache menus and levels to prevent redeclaration in rendering loop
-    var characterSelectMenu = new Menus.CharacterSelect(),
+    var gameSelectMenu = new Menus.GameSelect(),
+        characterSelectMenu = new Menus.CharacterSelect(),
         froggerLevel = new Levels.Frogger(),
         gemCollectorLevel = new Levels.GemCollector();
 
+    // Enum for game selection
+    var Game = {
+        FROGGER: 1,
+        GEM_COLLECTOR: 2,
+        UNSELECTED: 3
+    }
+    var game = Game.UNSELECTED;
+
     // State enum to transition between different screens in the game
     var State = {
-        MENU_CHARACTER_SELECT: 1,
-        LEVEL_FROGGER: 2,
-        LEVEL_GEM_COLLECTOR: 3
+        MENU_GAME_SELECT: 1,
+        MENU_CHARACTER_SELECT: 2,
+        LEVEL_FROGGER: 3,
+        LEVEL_GEM_COLLECTOR: 4
     }
-    var state = State.MENU_CHARACTER_SELECT; // initial state
+    var state = State.MENU_GAME_SELECT; // initial state
     
     // This object is used to assist in the selection of a character
     // TODO: Revisit
+    var gameSelectTitleInfo = gameSelectTitleInfo();
     var characterSelectSpriteInfo = populateCharacterSelectInfo(characterSelectMenu);
+
 
     // define canvas dimensions and append to document body
     canvas.width = 505;
@@ -65,6 +77,9 @@
          *  delta if needed to our update function since it may be used for smooth animation.
          */
         switch (state) {
+            case State.MENU_GAME_SELECT:
+                renderGameSelect(gameSelectMenu);
+                break;
             case State.MENU_CHARACTER_SELECT:
                 renderCharacterSelect(characterSelectMenu);
                 break;
@@ -152,6 +167,23 @@
         }
     }
 
+    function gameSelectTitleInfo() {
+        return {
+            froggerHitBox: {
+                x: Models.SPRITE_WIDTH,
+                y: (Models.SPRITE_Y_OFFSET * 2) + Models.SPRITE_Y_INITIAL_POSITION,
+                width: Models.SPRITE_WIDTH * 3,
+                height: Models.SPRITE_Y_OFFSET
+            },
+            gemCollectorHitBox: {
+                x: Models.SPRITE_WIDTH,
+                y: (Models.SPRITE_Y_OFFSET * 5) + Models.SPRITE_Y_INITIAL_POSITION,
+                width: Models.SPRITE_WIDTH * 3,
+                height: Models.SPRITE_Y_OFFSET
+            }   
+        }
+    }
+
     /**
     *   Convenience function that generates an array of character sprite info.
     *   The application caches this information to use for character selection.
@@ -197,6 +229,7 @@
     function changeState(nextState, metadata) {
         // execute work before state change
         switch (nextState) {
+            case State.MENU_GAME_SELECT:
             case State.MENU_CHARACTER_SELECT:
                 break;
             case State.LEVEL_FROGGER:
@@ -274,6 +307,33 @@
     *   This function handles rendering the character select menu.
     *   @param menu the content data for a menu screen
     */
+    function renderGameSelect(menu) {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        // draw scene
+        renderLayer(menu.map, 0, 0);
+
+        // render text
+        ctx.font = "54px VT323", ctx.fillStyle = "green", ctx.strokeStyle = "blue", ctx.textAlign = "center";
+        var x = ctx.canvas.width / 2;
+        var y = ctx.canvas.height / 16;
+        ctx.fillText("CHOOSE A GAME!", x, y)
+        ctx.strokeText("CHOOSE A GAME!", x, y);
+
+        y = ctx.canvas.height/3.2;
+        ctx.fillStyle = "white", ctx.strokeStyle = "green";
+        ctx.fillText("FROGGER", x, y)
+        ctx.strokeText("FROGGER", x, y);
+
+        y = ctx.canvas.height/1.39;
+        ctx.fillStyle = "white", ctx.strokeStyle = "blue";
+        ctx.fillText("GEM COLLECTOR", x, y)
+        ctx.strokeText("GEM COLLECTOR", x, y);
+    }
+
+    /**
+    *   This function handles rendering the character select menu.
+    *   @param menu the content data for a menu screen
+    */
     function renderCharacterSelect(menu) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         // draw scene
@@ -332,16 +392,43 @@
         var rect = canvas.getBoundingClientRect();
         var x = event.clientX - rect.left;
         var y = event.clientY - rect.top;
+        var clickRect = {x: x, y: y, width: 1, height: 1};
 
-        // Determine which character has been selected and change state to the selected game
-        if (state === State.MENU_CHARACTER_SELECT) {
-            var clickRect = {x: x, y: y, width: 1, height: 1};
-            characterSelectSpriteInfo.forEach(spriteInfo => {
-                if (isCollision(clickRect, spriteInfo.collisionRect)) {
-                    changeState(State.LEVEL_FROGGER, {characterType: spriteInfo.characterType}); // TODO: Dynamic game selection
-                    // changeState(State.LEVEL_GEM_COLLECTOR, {characterType: spriteInfo.characterType}); // TODO: Dynamic game selection
+        switch (state) {
+            case State.MENU_GAME_SELECT:
+                if (isCollision(clickRect, gameSelectTitleInfo.froggerHitBox)) {
+                    game = Game.FROGGER;
+                    for (var i = 0; i < 4; ++i) {
+                        allEnemies.push(new Models.FroggerEnemy(Models.CharacterType.BUG));
+                    }
                 }
-            });       
+                else if (isCollision(clickRect, gameSelectTitleInfo.gemCollectorHitBox)) {
+                    game = Game.GEM_COLLECTOR;
+                    for (var i = 0; i < 5; ++i) {
+                        allEnemies.push(new Models.GemCollectorEnemy(Models.CharacterType.BUG));
+                    }
+                }
+
+                if (game !== Game.UNSELECTED) {
+                    changeState(State.MENU_CHARACTER_SELECT, null);
+                }
+                break;
+            case State.MENU_CHARACTER_SELECT:
+                characterSelectSpriteInfo.forEach(spriteInfo => {
+                    if (isCollision(clickRect, spriteInfo.collisionRect)) {
+                        switch (game) {
+                            case Game.FROGGER:
+                                changeState(State.LEVEL_FROGGER, {characterType: spriteInfo.characterType});
+                                break;
+                            case Game.GEM_COLLECTOR:
+                                changeState(State.LEVEL_GEM_COLLECTOR, {characterType: spriteInfo.characterType});
+                                break;
+                            // no default case
+                        }
+                    }
+                }); 
+                break;
+            // no default case
         }
     }
 

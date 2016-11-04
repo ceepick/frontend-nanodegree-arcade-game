@@ -3,15 +3,7 @@
 */
 
 // Create Enemies and Players
-var numEnemies = 4;
-var allEnemies = [];
-var i;
-// for (i = 0; i < numEnemies; ++i) {
-//     allEnemies.push(new Models.GemCollectorEnemy(Models.CharacterType.BUG));
-// }
-for (i = 0; i < numEnemies; ++i) {
-    allEnemies.push(new Models.FroggerEnemy(Models.CharacterType.BUG));
-}
+var allEnemies = []; // dynamic based on level
 var player = null; // user will pick character in menus
 
 
