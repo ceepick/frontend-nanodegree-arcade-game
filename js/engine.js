@@ -39,6 +39,7 @@
     var state = State.MENU_CHARACTER_SELECT; // initial state
     
     // This object is used to assist in the selection of a character
+    // TODO: Revisit
     var characterSelectSpriteInfo = populateCharacterSelectInfo(characterSelectMenu);
 
     // define canvas dimensions and append to document body

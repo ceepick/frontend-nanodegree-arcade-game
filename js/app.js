@@ -26,7 +26,7 @@ document.addEventListener('keyup', function(e) {
     };
 
     // only call handleInput if a player has been selected
-    if (player !== null) {
+    if (player !== null && player.state === player.State.PLAYING) {
         player.handleInput(allowedKeys[e.keyCode]); // TODO: fix handleinput call before player is set
     }
 });

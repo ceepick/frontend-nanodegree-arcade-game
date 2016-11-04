@@ -43,6 +43,9 @@ var Models = {
     lPercentComplete = null,
     lInitialPosition = null;
 
+    // For collision detection
+    var froggerLevel = new Levels.Frogger();
+
 	/**
 	*	PRIVATE UTILS
 	*/
@@ -291,16 +294,37 @@ var Models = {
 	* 	@return true if valid move, false if invalid move
 	*/
 	Models.Player.prototype.isValidMove = function(keyCode) {
-		// TODO: more dynamic, remove dependence on consts
-		var x = this.origin.x, y = this.origin.y;
-		if (keyCode === "left" && x === LEFT_BOUNDS || // edge left
-	        keyCode === "up" && y === UPPER_BOUNDS || // edge top
-	        keyCode === "up" && x !== this.blockOffset.x * 2 && y === NON_MIDDLE_UPPER_BOUNDS || // middle, 1 block down
-	        keyCode === "right" && x === RIGHT_BOUNDS || // edge right
-	        keyCode === "down" && y === LOWER_BOUNDS) { // edge bottom
-	        return false;
-	    }
-	    return true;
+		// determine current x,y indices
+		var x = this.origin.x/this.blockOffset.x,
+			y = (this.origin.y + 30)/this.blockOffset.y;
+		// inc/dec x or y
+		switch (keyCode) {
+        case 'left':
+        	x -= 1;
+            break;
+        case 'up':
+        	y -= 1;
+            break;
+        case 'right':
+        	x += 1;
+            break;
+        case 'down':
+        	y += 1;
+            break;
+        default:
+            break;
+        }
+		// check boundaries
+		if (x < 0 || x > 4 || y < 0 || y > 5) {
+			return false;
+		}
+		// check destination tile type
+		if (froggerLevel.map.images[y][x] === Levels.MapSpriteUrl.W) {
+			return false;
+		}
+
+		// valid move
+		return true;
 	};
 
 	/**
@@ -333,7 +357,7 @@ var Models = {
 		var state = Engine.currentState();
 		var _ = Engine.State; // enum
 		if (state === _.LEVEL_FROGGER || state === _.LEVEL_COLLECTOR) {
-			if (this.isValidMove(keyCode) && this.state === this.State.PLAYING) {
+			if (this.state === this.State.PLAYING && this.isValidMove(keyCode)) {
 				var origin = this.origin;
 				var blockOffset = this.blockOffset;
 		        switch (keyCode) {
@@ -353,7 +377,7 @@ var Models = {
 		                break;
 		        }
 		    }
-		    // TODO: Winning graphic and better experience of reset
+
 		    if (hasReachedTopRow(this.origin.y)) {
 		    	this.state = this.State.WON;
 		    	setTimeout( () => {
