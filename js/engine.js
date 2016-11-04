@@ -33,18 +33,18 @@
 
     // Enum for game selection
     var Game = {
-        FROGGER: 1,
-        GEM_COLLECTOR: 2,
-        UNSELECTED: 3
+        FROGGER: 0,
+        GEM_COLLECTOR: 1,
+        UNSELECTED: 2
     }
     var game = Game.UNSELECTED;
 
     // State enum to transition between different screens in the game
     var State = {
-        MENU_GAME_SELECT: 1,
-        MENU_CHARACTER_SELECT: 2,
-        LEVEL_FROGGER: 3,
-        LEVEL_GEM_COLLECTOR: 4
+        MENU_GAME_SELECT: 0,
+        MENU_CHARACTER_SELECT: 1,
+        LEVEL_FROGGER: 2,
+        LEVEL_GEM_COLLECTOR: 3
     }
     var state = State.MENU_GAME_SELECT; // initial state
     
@@ -90,7 +90,7 @@
             case State.LEVEL_GEM_COLLECTOR:
                 ctx.clearRect(0, 0, canvas.width, canvas.height); // for top row artifacting
                 update(dt);
-                renderFrogger(gemCollectorLevel);
+                renderGemCollector(gemCollectorLevel);
                 break;
             default:
         }
@@ -349,10 +349,19 @@
     }
 
     /**
-    *   This function handles rendering the frogger game level.
+    *   This function handles rendering the Frogger game level.
     *   @param level the content data for the frogger level
     */
     function renderFrogger(level) {
+        renderLayer(level.map, 0, 0);
+        renderEntities();
+    }
+
+    /**
+    *   This function handles rendering the Gem Collector game level.
+    *   @param level the content data for the frogger level
+    */
+    function renderGemCollector(level) {
         renderLayer(level.map, 0, 0);
         renderEntities();
     }
@@ -371,7 +380,9 @@
             enemy.render();
         });
 
-        // player.render();
+        gems.forEach(gem => {
+            gem.render();
+        });
     }
 
     /* This function does nothing but it could have been a good place to
@@ -407,6 +418,9 @@
                     for (var i = 0; i < 5; ++i) {
                         allEnemies.push(new Models.GemCollectorEnemy(Models.CharacterType.BUG));
                     }
+                    for (var i = 0; i < 3; ++i) {
+                        gems.push(new Models.GreenGem(Models.CharacterType.GEM_GREEN));
+                    }
                 }
 
                 if (game !== Game.UNSELECTED) {
@@ -423,12 +437,12 @@
                             case Game.GEM_COLLECTOR:
                                 changeState(State.LEVEL_GEM_COLLECTOR, {characterType: spriteInfo.characterType});
                                 break;
-                            // no default case
+                            default:
                         }
                     }
                 }); 
                 break;
-            // no default case
+            default:
         }
     }
 
@@ -446,7 +460,8 @@
         'images/char-cat-girl.png',
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
-        'images/char-princess-girl.png'
+        'images/char-princess-girl.png',
+        'images/gem-green.png'
     ]);
     Resources.onReady(init);
 

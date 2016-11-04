@@ -5,7 +5,7 @@
 // Create Enemies and Players
 var allEnemies = []; // dynamic based on level
 var player = null; // user will pick character in menus
-
+var gems = [];
 
 /**
 *   EVENT LISTENERS

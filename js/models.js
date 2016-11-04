@@ -9,8 +9,16 @@ var Models = {
 	    GIRL_HORN: 2,
 	    GIRL_PINK: 3,
 	    GIRL_PRINCESS: 4,
-	    BUG: 5
+	    BUG: 5,
+	    GEM_GREEN: 6
 	},
+
+	GemType: {
+		GREEN: 0,
+		BLUE: 1,
+		ORANGE: 2
+	},
+
 	// These are duplicated to reduce the load on the menu screen.
 	// I.e. we don't create player objects, just provide enough 
 	// information to render the sprites for character selection.
@@ -29,12 +37,6 @@ var Models = {
 };
 
 (function () {
-	// Determine if this should exist in a finer scope
-	var lAnimationDuration = 300, // 0.3s
-	lInitialTime = null,
-    lPercentComplete = null,
-    lInitialPosition = null;
-
     // For collision detection
     var froggerLevel = new Levels.Frogger();
 
@@ -82,6 +84,9 @@ var Models = {
            		break;
            	case Models.CharacterType.GIRL_PRINCESS:
            		imagePath = 'images/char-princess-girl.png';
+           		break;
+           	case Models.CharacterType.GEM_GREEN:
+           		imagePath = 'images/gem-green.png';
            		break;
             default:
                 imagePath = undefined;
@@ -247,6 +252,11 @@ var Models = {
 		this.collisionSize = {width: 40, height: 70};
 
 		this.chatBubbleSprite = Resources.get('images/obj-speech-bubble.png');
+
+		this.lAnimationDuration = 300; // 0.3s
+		this.lInitialTime = null;
+		this.lPercentComplete = null;
+		this.lInitialPosition = null;
 	};
 	Models.Player.prototype = Object.create(Models.Character.prototype);
 
@@ -259,19 +269,19 @@ var Models = {
 		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 		var now = Date.now();
 		// start animation
-		if (lInitialTime === null) {
+		if (this.lInitialTime === null) {
 			// set initial time and initial position for progress calculations
-			lInitialTime = now;
-			lInitialPosition = this.origin;
+			this.lInitialTime = now;
+			this.lInitialPosition = this.origin;
 		} else {
-			lPercentComplete = ((now - lInitialTime)) / lAnimationDuration;
+			this.lPercentComplete = ((now - this.lInitialTime)) / this.lAnimationDuration;
 			// update position on path until duration reached
-			if (lPercentComplete <= 1) {
-				this.origin = getNewPosition(lInitialPosition, this.initialOrigin, lPercentComplete);
+			if (this.lPercentComplete <= 1) {
+				this.origin = getNewPosition(this.lInitialPosition, this.initialOrigin, this.lPercentComplete);
 			} else {
 				// reset state for next collision animation, assign final position
 				this.state = this.State.PLAYING;
-				lInitialTime = lPercentComplete = lInitialPosition = null;
+				this.lInitialTime = this.lPercentComplete = this.lInitialPosition = null;
 				this.origin = this.initialOrigin;
 			}
 		}
@@ -511,4 +521,88 @@ var Models = {
 		// valid move
 		return true;
 	};
+
+	Models.Gem = function(characterType) {
+		Models.Character.call(this, characterType);
+
+		this.State = {
+			SPAWNED: 0,
+			COLLECTED: 1,
+			DESPAWNED: 2
+		},
+		this.state = this.State.SPAWNED;
+
+		this.lLifespan = 0;
+		this.lInitialTime = null;
+		this.lPercentComplete = null;
+
+		this.origin = {
+			x: this.blockOffset.x * getRandomInt(0,5),
+			y: this.spriteOffset.y + (this.blockOffset.y * getRandomInt(0,6))
+		};
+	};
+
+	Models.Gem.prototype.update = function() {
+				// clear canvas to avoid render behind game board when transitioning from State.WON
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		var now = Date.now();
+		// start animation
+		if (this.lInitialTime === null) {
+			// set initial time and initial position for progress calculations
+			this.lInitialTime = now;
+		} else {
+			this.lPercentComplete = ((now - this.lInitialTime)) / this.lAnimationDuration;
+			// update position on path until duration reached
+			if (this.lPercentComplete === 1) {
+				this.state = this.State.DESPAWNED;
+				// remove
+			}
+		}
+	};
+
+	Models.Gem.prototype.render = function() {
+		var origin = this.origin;
+		ctx.drawImage(Resources.get(this.sprite), origin.x, origin.y);
+	};
+
+	Models.GreenGem = function(characterType) {
+		Models.Gem.call(this, characterType);
+		this.lifespan = getRandomInt(3, 7) * 1000; // 3 - 7s
+		this.value = 1;
+	};
+	Models.GreenGem.prototype = Object.create(Models.Gem.prototype);
+
 })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
