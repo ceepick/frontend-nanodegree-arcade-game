@@ -199,7 +199,7 @@
             case State.LEVEL_FROGGER:
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 if (player === null) {
-                    player = new Models.Player(metadata.characterType);
+                    player = new Models.FroggerPlayer(metadata.characterType);
                 }
                 break;
             case State.LEVEL_COLLECTOR:

@@ -120,8 +120,6 @@ var Models = {
 		this.spriteSize = {width: 101, height: 171};
 		this.spriteOffset = {x: 0, y: -30};
 		this.blockOffset = {x: 101, y: 83};
-
-		this.chatBubbleSprite = Resources.get('images/obj-speech-bubble.png');
 	};
 
 	/**
@@ -198,10 +196,10 @@ var Models = {
 	};
 
 	/**
-	*	Player character.
+	*	Player character base object.
 	*	@param characterType enumeration value that signals proper configuration
 	*	@constructor
-	*/	
+	*/
 	Models.Player = function(characterType) {
 		Models.Character.call(this, characterType);
 
@@ -214,27 +212,15 @@ var Models = {
 
 		this.collisionOffset = {x: 30, y: 62};
 		this.collisionSize = {width: 40, height: 70};
-		Object.defineProperty(this, "initialOrigin", {
-			get: function() {
-				var x = this.blockOffset.x * 2;
-		    	var y = this.spriteOffset.y + (this.blockOffset.y * 5);
-		    	return {x, y};
-		    }
-		});
-		this.origin = this.initialOrigin;
+
+		this.chatBubbleSprite = Resources.get('images/obj-speech-bubble.png');
 	};
 	Models.Player.prototype = Object.create(Models.Character.prototype);
 
-	Models.Player.prototype.update = function(dt) {
-		if (this.state === this.State.WON) {
-			ctx.font = "20px VT323", ctx.fillStyle = "black", ctx.textAlign = "center";
-		}
-		// Animate player back to start upon collision
-		else if (this.state === this.State.RESET) {
-			this.updateResetAnimation();
-		}
-	};
-
+	/**
+	*	Called to update the model during the level reset animation.
+	*	The player will animate on a straight path back to the origin.
+	*/
 	Models.Player.prototype.updateResetAnimation = function() {
 		// clear canvas to avoid render behind game board when transitioning from State.WON
 		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -277,6 +263,23 @@ var Models = {
 		}
 	};
 
+	/**
+	*	Updates the character model data before a render.
+	*/
+	Models.Player.prototype.update = function() {
+		if (this.state === this.State.WON) {
+			ctx.font = "20px VT323", ctx.fillStyle = "black", ctx.textAlign = "center";
+		}
+		// Animate player back to start upon collision
+		else if (this.state === this.State.RESET) {
+			this.updateResetAnimation();
+		}
+	};
+
+	/**
+	*	Returns the "indices" of the player ont he gameboard.
+	* 	This method is used to help validate moves.
+	*/
 	Models.Player.prototype.mapLocationIndices = function() {
 		return {
 			x: this.origin.x/this.blockOffset.x,
@@ -325,16 +328,6 @@ var Models = {
 	};
 
 	/**
-	*	Determines if user has reached the winning destination square of the game board.
-	*	Used to determine if user has won the basic game by reaching the top unscathed.
-	*	@return true if on the winning square, false if not on the winning square
-	*/
-	Models.Player.prototype.isWinningMove = function() {
-		var indices = this.mapLocationIndices();
-		return (indices.x === 2 && indices.y === 0) ? true : false;
-	};
-
-	/**
 	*	Determines which text string should be displayed for the player winning the level.
 	*	@return appropriate string or an empty string for an undefined player
 	*/
@@ -342,7 +335,7 @@ var Models = {
 		var types = Models.CharacterType;
 		switch (this.characterType) {
 			case types.BOY:
-				return "I h8 winning";
+				return "Bummer";
 			case types.GIRL_CAT:
 				return "NYAN!!!";
 			case types.GIRL_HORN:
@@ -392,5 +385,34 @@ var Models = {
 		    	}, 1200);
 		    }
 		}
+	};
+
+	/**
+	*	Frogger player character.
+	*	@param characterType enumeration value that signals proper configuration
+	*	@constructor
+	*/	
+	Models.FroggerPlayer = function(characterType) {
+		Models.Player.call(this, characterType);
+
+		Object.defineProperty(this, "initialOrigin", {
+			get: function() {
+				var x = this.blockOffset.x * 2;
+		    	var y = this.spriteOffset.y + (this.blockOffset.y * 5);
+		    	return {x, y};
+		    }
+		});
+		this.origin = this.initialOrigin;
+	};
+	Models.FroggerPlayer.prototype = Object.create(Models.Player.prototype);
+
+	/**
+	*	Determines if user has reached the winning destination square of the game board.
+	*	Used to determine if user has won the basic game by reaching the top unscathed.
+	*	@return true if on the winning square, false if not on the winning square
+	*/
+	Models.FroggerPlayer.prototype.isWinningMove = function() {
+		var indices = this.mapLocationIndices();
+		return (indices.x === 2 && indices.y === 0) ? true : false;
 	};
 })();
