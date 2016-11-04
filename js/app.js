@@ -9,6 +9,9 @@ var i;
 for (i = 0; i < numEnemies; ++i) {
     allEnemies.push(new Models.GemCollectorEnemy(Models.CharacterType.BUG));
 }
+// for (i = 0; i < numEnemies; ++i) {
+//     allEnemies.push(new Models.FroggerEnemy(Models.CharacterType.BUG));
+// }
 var player = null; // user will pick character in menus
 
 

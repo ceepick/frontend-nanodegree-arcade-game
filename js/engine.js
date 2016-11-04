@@ -72,7 +72,7 @@
                 update(dt);
                 renderFrogger(froggerLevel);
                 break;
-            case State.LEVEL_COLLECTOR:
+            case State.LEVEL_GEM_COLLECTOR:
                 ctx.clearRect(0, 0, canvas.width, canvas.height); // for top row artifacting
                 update(dt);
                 renderFrogger(gemCollectorLevel);
@@ -205,7 +205,7 @@
                     player = new Models.FroggerPlayer(metadata.characterType);
                 }
                 break;
-            case State.LEVEL_COLLECTOR:
+            case State.LEVEL_GEM_COLLECTOR:
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 if (player === null) {
                     player = new Models.GemCollectorPlayer(metadata.characterType);
@@ -338,7 +338,8 @@
             var clickRect = {x: x, y: y, width: 1, height: 1};
             characterSelectSpriteInfo.forEach(spriteInfo => {
                 if (isCollision(clickRect, spriteInfo.collisionRect)) {
-                    changeState(State.LEVEL_COLLECTOR, {characterType: spriteInfo.characterType}); // TODO: Dynamic game selection
+                    // changeState(State.LEVEL_FROGGER, {characterType: spriteInfo.characterType}); // TODO: Dynamic game selection
+                    changeState(State.LEVEL_GEM_COLLECTOR, {characterType: spriteInfo.characterType}); // TODO: Dynamic game selection
                 }
             });       
         }

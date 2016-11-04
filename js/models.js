@@ -349,7 +349,7 @@ var Models = {
 	Models.Player.prototype.handleInput = function(keyCode) {
 		var state = Engine.currentState();
 		var _ = Engine.State; // enum
-		if (state === _.LEVEL_FROGGER || state === _.LEVEL_COLLECTOR) {
+		if (state === _.LEVEL_FROGGER || state === _.LEVEL_GEM_COLLECTOR) {
 			if (this.state === this.State.PLAYING && this.isValidMove(keyCode)) {
 				var origin = this.origin;
 				var blockOffset = this.blockOffset;
