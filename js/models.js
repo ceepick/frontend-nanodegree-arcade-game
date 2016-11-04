@@ -208,6 +208,27 @@ var Models = {
 	Models.FroggerEnemy.prototype = Object.create(Models.Enemy.prototype);
 
 	/**
+	*	Collector enemy.
+	*	@param characterType enumeration value that signals proper configuration
+	* 	@constructor
+	*/
+	Models.GemCollectorEnemy = function(characterType) {
+		Models.Enemy.call(this, characterType);
+
+		Object.defineProperty(this, "initialOrigin", {
+			get: function() {
+				var x = -this.blockOffset.x; // offscreen 1 grid position
+				var y = this.spriteOffset.y + (this.blockOffset.y * getRandomInt(0, 5));
+				return {x, y};
+			}
+		});
+
+		this.origin = this.initialOrigin;
+	};
+	Models.GemCollectorEnemy.prototype = Object.create(Models.Enemy.prototype);
+
+
+	/**
 	*	Player character base object.
 	*	@param characterType enumeration value that signals proper configuration
 	*	@constructor
@@ -300,46 +321,6 @@ var Models = {
 	};
 
 	/**
-	*	Determines if sprite should be able to move in a particular direction on the canvas.
-	*	@param keyCode code associated with key press
-	* 	@return true if valid move, false if invalid move
-	*/
-	Models.Player.prototype.isValidMove = function(keyCode) {
-		var indices = this.mapLocationIndices();
-		var x = indices.x,
-			y = indices.y;
-
-		// inc/dec x or y
-		switch (keyCode) {
-	        case 'left':
-	        	x -= 1;
-	            break;
-	        case 'up':
-	        	y -= 1;
-	            break;
-	        case 'right':
-	        	x += 1;
-	            break;
-	        case 'down':
-	        	y += 1;
-	            break;
-	        default:
-	            break;
-        }
-		// check boundaries
-		if (x < 0 || x > 4 || y < 0 || y > 5) {
-			return false;
-		}
-		// check destination tile type
-		if (froggerLevel.map.images[y][x] === Levels.MapSpriteUrl.W) {
-			return false;
-		}
-
-		// valid move
-		return true;
-	};
-
-	/**
 	*	Determines which text string should be displayed for the player winning the level.
 	*	@return appropriate string or an empty string for an undefined player
 	*/
@@ -419,6 +400,46 @@ var Models = {
 	Models.FroggerPlayer.prototype = Object.create(Models.Player.prototype);
 
 	/**
+	*	Determines if sprite should be able to move in a particular direction on the canvas.
+	*	@param keyCode code associated with key press
+	* 	@return true if valid move, false if invalid move
+	*/
+	Models.FroggerPlayer.prototype.isValidMove = function(keyCode) {
+		var indices = this.mapLocationIndices();
+		var x = indices.x,
+			y = indices.y;
+
+		// inc/dec x or y
+		switch (keyCode) {
+	        case 'left':
+	        	x -= 1;
+	            break;
+	        case 'up':
+	        	y -= 1;
+	            break;
+	        case 'right':
+	        	x += 1;
+	            break;
+	        case 'down':
+	        	y += 1;
+	            break;
+	        default:
+	            break;
+        }
+		// check boundaries
+		if (x < 0 || x > 4 || y < 0 || y > 5) {
+			return false;
+		}
+		// check destination tile type
+		if (froggerLevel.map.images[y][x] === Levels.MapSpriteUrl.W) {
+			return false;
+		}
+
+		// valid move
+		return true;
+	};
+
+	/**
 	*	Determines if user has reached the winning destination square of the game board.
 	*	Used to determine if user has won the basic game by reaching the top unscathed.
 	*	@return true if on the winning square, false if not on the winning square
@@ -426,5 +447,60 @@ var Models = {
 	Models.FroggerPlayer.prototype.isWinningMove = function() {
 		var indices = this.mapLocationIndices();
 		return (indices.x === 2 && indices.y === 0) ? true : false;
+	};
+
+	/**
+	*	Collector player character.
+	*	@param characterType enumeration value that signals proper configuration
+	*	@constructor
+	*/	
+	Models.GemCollectorPlayer = function(characterType) {
+		Models.Player.call(this, characterType);
+
+		Object.defineProperty(this, "initialOrigin", {
+			get: function() {
+				var x = this.blockOffset.x * 2;
+		    	var y = this.spriteOffset.y + (this.blockOffset.y * 3);
+		    	return {x, y};
+		    }
+		});
+		this.origin = this.initialOrigin;
+	};
+	Models.GemCollectorPlayer.prototype = Object.create(Models.Player.prototype);
+
+	/**
+	*	Determines if sprite should be able to move in a particular direction on the canvas.
+	*	@param keyCode code associated with key press
+	* 	@return true if valid move, false if invalid move
+	*/
+	Models.GemCollectorPlayer.prototype.isValidMove = function(keyCode) {
+		var indices = this.mapLocationIndices();
+		var x = indices.x,
+			y = indices.y;
+
+		// inc/dec x or y
+		switch (keyCode) {
+	        case 'left':
+	        	x -= 1;
+	            break;
+	        case 'up':
+	        	y -= 1;
+	            break;
+	        case 'right':
+	        	x += 1;
+	            break;
+	        case 'down':
+	        	y += 1;
+	            break;
+	        default:
+	            break;
+        }
+		// check boundaries
+		if (x < 0 || x > 4 || y < 0 || y > 5) {
+			return false;
+		}
+
+		// valid move
+		return true;
 	};
 })();
