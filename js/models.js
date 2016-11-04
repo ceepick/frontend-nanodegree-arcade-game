@@ -31,11 +31,8 @@ var Models = {
 (function () {
 
 	// I'm being lazy here for now. Future state is the Player Model generates these dynamically.
-	const LEFT_BOUNDS = 0;
 	const UPPER_BOUNDS = -30;
-	const RIGHT_BOUNDS = 404;
 	const LOWER_BOUNDS = 385;
-	const NON_MIDDLE_UPPER_BOUNDS = 53;
 
 	// Determine if this should exist in a finer scope
 	var lAnimationDuration = 300, // 0.3s
@@ -61,16 +58,6 @@ var Models = {
 	    min = Math.ceil(min);
 	    max = Math.floor(max);
 	    return Math.floor(Math.random() * (max - min + 1)) + min;
-	};
-
-	/**
-	*	Determines if user has reached the top row of the gameboard.
-	*	Used to determine if user has won the basic game by reaching the top unscathed.
-	*	@param yCoordinate the current y-axis coordinate of the player sprite
-	*	@return true if on the top row, false if not on the top row
-	*/
-	function hasReachedTopRow(yCoordinate) {
-		return (yCoordinate === UPPER_BOUNDS) ? true : false;
 	};
 
 	/**
@@ -328,6 +315,18 @@ var Models = {
 	};
 
 	/**
+	*	Determines if user has reached the winning destination square of the game board.
+	*	Used to determine if user has won the basic game by reaching the top unscathed.
+	*	@return true if on the winning square, false if not on the winning square
+	*/
+	Models.Player.prototype.isWinningMove = function() {
+		// determine current x,y indices
+		var x = this.origin.x/this.blockOffset.x,
+			y = (this.origin.y + 30)/this.blockOffset.y;
+		return (x === 2 && y === 0) ? true : false;
+	};
+
+	/**
 	*	Determines which text string should be displayed for the player winning the level.
 	*	@return appropriate string or an empty string for an undefined player
 	*/
@@ -378,7 +377,7 @@ var Models = {
 		        }
 		    }
 
-		    if (hasReachedTopRow(this.origin.y)) {
+		    if (this.isWinningMove()) {
 		    	this.state = this.State.WON;
 		    	setTimeout( () => {
 		    		this.state = this.State.RESET;
