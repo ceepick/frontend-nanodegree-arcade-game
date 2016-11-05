@@ -10,7 +10,9 @@ var Models = {
 	    GIRL_PINK: 3,
 	    GIRL_PRINCESS: 4,
 	    BUG: 5,
-	    GEM_GREEN: 6
+	    GEM_GREEN: 6,
+	    GEM_BLUE: 7,
+	    GEM_ORANGE: 8
 	},
 
 	GemType: {
@@ -87,6 +89,12 @@ var Models = {
            		break;
            	case Models.CharacterType.GEM_GREEN:
            		imagePath = 'images/gem-green.png';
+           		break;
+           	case Models.CharacterType.GEM_BLUE:
+           		imagePath = 'images/gem-blue.png';
+           		break;
+           	case Models.CharacterType.GEM_ORANGE:
+           		imagePath = 'images/gem-orange.png';
            		break;
             default:
                 imagePath = undefined;
@@ -541,8 +549,8 @@ var Models = {
 			y: this.spriteOffset.y + (this.blockOffset.y * getRandomInt(0,5))
 		};
 
-		this.collisionOffset = this.spriteOffset;
-		this.collisionSize = this.spriteSize;
+		this.collisionOffset = {x: 1, y: 77};
+		this.collisionSize = {width: 98, height: 66};
 	};
 	Models.Gem.prototype = Object.create(Models.Character.prototype);
 
@@ -576,37 +584,17 @@ var Models = {
 	};
 	Models.GreenGem.prototype = Object.create(Models.Gem.prototype);
 
+	Models.BlueGem = function(characterType) {
+		Models.Gem.call(this, characterType);
+		this.lLifespan = getRandomInt(2, 5) * 1000; // 3 - 7s
+		this.value = 3;
+	};
+	Models.BlueGem.prototype = Object.create(Models.Gem.prototype);
+
+	Models.OrangeGem = function(characterType) {
+		Models.Gem.call(this, characterType);
+		this.lLifespan = getRandomInt(1, 3) * 1000; // 3 - 7s
+		this.value = 5;
+	};
+	Models.OrangeGem.prototype = Object.create(Models.Gem.prototype);
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

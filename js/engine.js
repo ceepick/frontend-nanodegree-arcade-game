@@ -237,6 +237,10 @@
         return state;
     }
 
+    function currentGame() {
+        return game;
+    }
+
     /**
     *   This method changes the game state between screens.
     *   @param nextState the state to transition to
@@ -294,7 +298,7 @@
             gemRect = gem.collisionRect();
             if (isCollision(playerRect, gemRect)) {
                 gem.state = gem.State.COLLECTED;
-                score++;
+                score += gem.value;
             }
         });
 
@@ -313,13 +317,24 @@
     */
     function shouldSpawnGem() {
         var min = Math.ceil(0);
-        var max = Math.floor(1000);
+        var max = Math.floor(100);
         var rand = Math.floor(Math.random() * (max - min + 1)) + min;
-        return (rand < 10 && gems.length <= 3) ? true : false;
+        return (rand < 1 && gems.length <= 3) ? true : false;
     }
 
     function spawnGem() {
-        var gem = new Models.GreenGem(Models.CharacterType.GEM_GREEN);
+        var min = Math.ceil(0);
+        var max = Math.floor(100);
+        var rand = Math.floor(Math.random() * (max - min + 1)) + min;
+
+        var gem;
+        if (rand < 5) {
+            gem = new Models.OrangeGem(Models.CharacterType.GEM_ORANGE);
+        } else if (rand >= 5 && rand < 20) {
+            gem = new Models.BlueGem(Models.CharacterType.GEM_BLUE);
+        } else {
+            gem = new Models.GreenGem(Models.CharacterType.GEM_GREEN);
+        }
         gems.push(gem);
     }
 
@@ -498,7 +513,9 @@
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
         'images/char-princess-girl.png',
-        'images/gem-green.png'
+        'images/gem-green.png',
+        'images/gem-blue.png',
+        'images/gem-orange.png'
     ]);
     Resources.onReady(init);
 
@@ -513,7 +530,9 @@
     */
     window.Engine = {
         onClick: onClick,
-        currentState: currentState,  // current state
-        State: State // Enum
+        currentState: currentState,
+        State: State,
+        currentGame: currentGame,
+        Game: Game
     };
 })(this);

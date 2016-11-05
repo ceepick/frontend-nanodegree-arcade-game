@@ -21,8 +21,23 @@ document.addEventListener('keyup', function(e) {
     };
 
     // only call handleInput if a player has been selected
-    if (player !== null && player.state === player.State.PLAYING) {
-        player.handleInput(allowedKeys[e.keyCode]); // TODO: fix handleinput call before player is set
+    if (player !== null && player.state === player.State.PLAYING && Engine.currentGame() === Engine.Game.FROGGER) {
+        player.handleInput(allowedKeys[e.keyCode]);
+    }
+});
+
+// Listen for user input and call to handle player movement
+document.addEventListener('keydown', function(e) {
+    var allowedKeys = {
+        37: 'left',
+        38: 'up',
+        39: 'right',
+        40: 'down'
+    };
+
+    // only call handleInput if a player has been selected
+    if (player !== null && player.state === player.State.PLAYING && Engine.currentGame() === Engine.Game.GEM_COLLECTOR) {
+        player.handleInput(allowedKeys[e.keyCode]);
     }
 });
 
