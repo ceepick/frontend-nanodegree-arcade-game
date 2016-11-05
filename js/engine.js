@@ -138,9 +138,22 @@
      * render methods.
      */
     function updateEntities(dt) {
+        if (game === Game.GEM_COLLECTOR) {
+            if (shouldSpawnGem()) {
+                spawnGem()
+            }
+            gems.forEach((gem, idx) => {
+                gem.update(dt);
+                if (gem.state === gem.State.COLLECTED || gem.state === gem.State.DESPAWNED) {
+                    gems.splice(idx, 1);
+                }
+            });
+        }
+
         allEnemies.forEach(enemy => {
             enemy.update(dt);
         });
+
         player.update();
     }
 
@@ -269,7 +282,6 @@
     /**
     *   Checks for collisions between the player and enemy sprites.
     */
-    // TODO - animate char before reset
     function checkCollisions() {
         var playerRect = player.collisionRect();
 
@@ -281,6 +293,21 @@
                 player.state = player.State.RESET;
             }
         });
+    }
+
+    /**
+    *   Determines if a new gem should be spawned
+    */
+    function shouldSpawnGem() {
+        var min = Math.ceil(0);
+        var max = Math.floor(1000);
+        var rand = Math.floor(Math.random() * (max - min + 1)) + min;
+        return (rand < 10 && gems.length <= 3) ? true : false;
+    }
+
+    function spawnGem() {
+        var gem = new Models.GreenGem(Models.CharacterType.GEM_GREEN);
+        gems.push(gem);
     }
 
     /**
@@ -374,14 +401,14 @@
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        player.render(); // render player first so beatles "run over" player :P
+        gems.forEach(gem => { // gems on the bottom
+            gem.render();
+        });
+
+        player.render(); // render player before enemies so beatles "run over" player :P
 
         allEnemies.forEach(enemy => {
             enemy.render();
-        });
-
-        gems.forEach(gem => {
-            gem.render();
         });
     }
 
@@ -413,13 +440,10 @@
                         allEnemies.push(new Models.FroggerEnemy(Models.CharacterType.BUG));
                     }
                 }
-                else if (isCollision(clickRect, gameSelectTitleInfo.gemCollectorHitBox)) {
+                if (isCollision(clickRect, gameSelectTitleInfo.gemCollectorHitBox)) {
                     game = Game.GEM_COLLECTOR;
                     for (var i = 0; i < 5; ++i) {
                         allEnemies.push(new Models.GemCollectorEnemy(Models.CharacterType.BUG));
-                    }
-                    for (var i = 0; i < 3; ++i) {
-                        gems.push(new Models.GreenGem(Models.CharacterType.GEM_GREEN));
                     }
                 }
 

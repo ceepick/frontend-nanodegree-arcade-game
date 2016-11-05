@@ -537,8 +537,8 @@ var Models = {
 		this.lPercentComplete = null;
 
 		this.origin = {
-			x: this.blockOffset.x * getRandomInt(0,5),
-			y: this.spriteOffset.y + (this.blockOffset.y * getRandomInt(0,6))
+			x: this.blockOffset.x * getRandomInt(0,4),
+			y: this.spriteOffset.y + (this.blockOffset.y * getRandomInt(0,5))
 		};
 	};
 
@@ -551,9 +551,9 @@ var Models = {
 			// set initial time and initial position for progress calculations
 			this.lInitialTime = now;
 		} else {
-			this.lPercentComplete = ((now - this.lInitialTime)) / this.lAnimationDuration;
+			this.lPercentComplete = ((now - this.lInitialTime)) / this.lLifespan;
 			// update position on path until duration reached
-			if (this.lPercentComplete === 1) {
+			if (this.lPercentComplete > 1) {
 				this.state = this.State.DESPAWNED;
 				// remove
 			}
@@ -567,7 +567,7 @@ var Models = {
 
 	Models.GreenGem = function(characterType) {
 		Models.Gem.call(this, characterType);
-		this.lifespan = getRandomInt(3, 7) * 1000; // 3 - 7s
+		this.lLifespan = getRandomInt(3, 7) * 1000; // 3 - 7s
 		this.value = 1;
 	};
 	Models.GreenGem.prototype = Object.create(Models.Gem.prototype);
