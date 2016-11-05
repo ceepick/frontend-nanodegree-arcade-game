@@ -53,6 +53,8 @@
     var gameSelectTitleInfo = gameSelectTitleInfo();
     var characterSelectSpriteInfo = populateCharacterSelectInfo(characterSelectMenu);
 
+    var score = 0;
+
 
     // define canvas dimensions and append to document body
     canvas.width = 505;
@@ -140,11 +142,12 @@
     function updateEntities(dt) {
         if (game === Game.GEM_COLLECTOR) {
             if (shouldSpawnGem()) {
-                spawnGem()
+                spawnGem();
             }
             gems.forEach((gem, idx) => {
                 gem.update(dt);
-                if (gem.state === gem.State.COLLECTED || gem.state === gem.State.DESPAWNED) {
+                var state = gem.state;
+                if (state === gem.State.COLLECTED || state === gem.State.DESPAWNED) {
                     gems.splice(idx, 1);
                 }
             });
@@ -285,6 +288,16 @@
     function checkCollisions() {
         var playerRect = player.collisionRect();
 
+        // check collisions with gems
+        var gemRect;
+        gems.forEach(gem => {
+            gemRect = gem.collisionRect();
+            if (isCollision(playerRect, gemRect)) {
+                gem.state = gem.State.COLLECTED;
+                score++;
+            }
+        });
+
         var enemyRect;
         allEnemies.forEach(enemy => {
             enemyRect = enemy.collisionRect();
@@ -353,8 +366,8 @@
 
         y = ctx.canvas.height/1.39;
         ctx.fillStyle = "white", ctx.strokeStyle = "blue";
-        ctx.fillText("GEM COLLECTOR", x, y)
-        ctx.strokeText("GEM COLLECTOR", x, y);
+        ctx.fillText("INDIANA GEMS", x, y)
+        ctx.strokeText("INDIANA GEMS", x, y);
     }
 
     /**

@@ -540,7 +540,11 @@ var Models = {
 			x: this.blockOffset.x * getRandomInt(0,4),
 			y: this.spriteOffset.y + (this.blockOffset.y * getRandomInt(0,5))
 		};
+
+		this.collisionOffset = this.spriteOffset;
+		this.collisionSize = this.spriteSize;
 	};
+	Models.Gem.prototype = Object.create(Models.Character.prototype);
 
 	Models.Gem.prototype.update = function() {
 				// clear canvas to avoid render behind game board when transitioning from State.WON
