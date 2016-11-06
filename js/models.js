@@ -65,28 +65,28 @@ var Models = {
 	*	@param characterType enumeration value
 	* 	@return path of image asset
 	*/
-	function spritePath(characterType) {
+	function spritePath(characterType, isInvincible) {
 		var imagePath;
 		// assignment/breaks chosen over straight returns for convention and future customization if needed
         switch (characterType) {
             case Models.CharacterType.BOY:
-                imagePath = 'images/char-boy.png';
-                break;
-            case Models.CharacterType.BUG:
-                imagePath = 'images/enemy-bug.png';
+            	imagePath = isInvincible ? 'images/char-boy-inv.png' : 'images/char-boy.png';
                 break;
             case Models.CharacterType.GIRL_CAT:
-            	imagePath = 'images/char-cat-girl.png';
+            	imagePath = isInvincible ? 'images/char-cat-girl-inv.png' : 'images/char-cat-girl.png';
                 break;
             case Models.CharacterType.GIRL_HORN:
-            	imagePath = 'images/char-horn-girl.png';
+            	imagePath = isInvincible ? 'images/char-horn-girl-inv.png' : 'images/char-horn-girl.png';
             	break;
            	case Models.CharacterType.GIRL_PINK:
-           		imagePath = 'images/char-pink-girl.png';
+           		imagePath = isInvincible ? 'images/char-pink-girl-inv.png' : 'images/char-pink-girl.png';
            		break;
            	case Models.CharacterType.GIRL_PRINCESS:
-           		imagePath = 'images/char-princess-girl.png';
+           		imagePath = isInvincible ? 'images/char-princess-girl-inv.png' : 'images/char-princess-girl.png';
            		break;
+           	case Models.CharacterType.BUG:
+                imagePath = 'images/enemy-bug.png';
+                break;
            	case Models.CharacterType.GEM_GREEN:
            		imagePath = 'images/gem-green.png';
            		break;
@@ -129,7 +129,7 @@ var Models = {
 	*/
 	Models.Character = function(characterType) {
 		this.characterType = characterType;
-		this.sprite = spritePath(characterType);
+		this.sprite = spritePath(characterType, false);
 		this.spriteSize = {width: 101, height: 171};
 		this.spriteOffset = {x: 0, y: -30};
 		this.blockOffset = {x: 101, y: 83};
@@ -252,7 +252,8 @@ var Models = {
 		this.State = {
 			PLAYING: 0,
 			WON: 1,
-			RESET: 3
+			RESET: 2,
+			INVINCIBILITY: 3
 		},
 		this.state = this.State.PLAYING;
 
@@ -262,6 +263,7 @@ var Models = {
 		this.chatBubbleSprite = Resources.get('images/obj-speech-bubble.png');
 
 		this.lAnimationDuration = 300; // 0.3s
+		this.lInvincibilityDuration = 3000; // 3s
 		this.lInitialTime = null;
 		this.lPercentComplete = null;
 		this.lInitialPosition = null;
@@ -288,9 +290,33 @@ var Models = {
 				this.origin = getNewPosition(this.lInitialPosition, this.initialOrigin, this.lPercentComplete);
 			} else {
 				// reset state for next collision animation, assign final position
-				this.state = this.State.PLAYING;
+				if (Engine.currentGame() === Engine.Game.FROGGER) {
+					this.state = this.State.PLAYING;
+				} else {
+					this.state = this.State.INVINCIBILITY;
+					this.sprite = spritePath(this.characterType, true);
+				}
 				this.lInitialTime = this.lPercentComplete = this.lInitialPosition = null;
 				this.origin = this.initialOrigin;
+			}
+		}
+	};
+
+	Models.Player.prototype.updateInvincibility = function() {
+		// clear canvas to avoid render behind game board when transitioning from State.WON
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		var now = Date.now();
+		// start animation
+		if (this.lInitialTime === null) {
+			// set initial time and initial position for progress calculations
+			this.lInitialTime = now;
+		} else {
+			this.lPercentComplete = ((now - this.lInitialTime)) / this.lInvincibilityDuration;
+			// update position on path until duration reached
+			if (this.lPercentComplete >= 1) {
+				this.state = this.State.PLAYING;
+				this.sprite = spritePath(this.characterType, false);
+				this.lInitialTime = this.lPercentComplete = this.lInitialPosition = null;
 			}
 		}
 	};
@@ -324,6 +350,10 @@ var Models = {
 		// Animate player back to start upon collision
 		else if (this.state === this.State.RESET) {
 			this.updateResetAnimation();
+		}
+		// Add invincibility for finite period
+		else if (this.state === this.State.INVINCIBILITY) {
+			this.updateInvincibility();
 		}
 	};
 
@@ -368,7 +398,8 @@ var Models = {
 		var state = Engine.currentState();
 		var _ = Engine.State; // enum
 		if (state === _.LEVEL_FROGGER || state === _.LEVEL_GEM_COLLECTOR) {
-			if (this.state === this.State.PLAYING && this.isValidMove(keyCode)) {
+			if ((this.state === this.State.PLAYING || this.state === this.State.INVINCIBILITY) 
+				&& this.isValidMove(keyCode)) {
 				var origin = this.origin;
 				var blockOffset = this.blockOffset;
 		        switch (keyCode) {

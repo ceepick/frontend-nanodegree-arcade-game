@@ -381,8 +381,8 @@
 
         y = ctx.canvas.height/1.39;
         ctx.fillStyle = "white", ctx.strokeStyle = "blue";
-        ctx.fillText("INDIANA GEMS", x, y)
-        ctx.strokeText("INDIANA GEMS", x, y);
+        ctx.fillText("GEM HUNTER", x, y)
+        ctx.strokeText("GEM HUNTER", x, y);
     }
 
     /**
@@ -509,10 +509,15 @@
         'images/obj-speech-bubble.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
+        'images/char-boy-inv.png',
         'images/char-cat-girl.png',
+        'images/char-cat-girl-inv.png',
         'images/char-horn-girl.png',
+        'images/char-horn-girl-inv.png',
         'images/char-pink-girl.png',
+        'images/char-pink-girl-inv.png',
         'images/char-princess-girl.png',
+        'images/char-princess-girl-inv.png',
         'images/gem-green.png',
         'images/gem-blue.png',
         'images/gem-orange.png'

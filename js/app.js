@@ -36,7 +36,9 @@ document.addEventListener('keydown', function(e) {
     };
 
     // only call handleInput if a player has been selected
-    if (player !== null && player.state === player.State.PLAYING && Engine.currentGame() === Engine.Game.GEM_COLLECTOR) {
+    if (player !== null 
+        && (player.state === player.State.PLAYING || player.state === player.State.INVINCIBILITY) 
+        && Engine.currentGame() === Engine.Game.GEM_COLLECTOR) {
         player.handleInput(allowedKeys[e.keyCode]);
     }
 });
