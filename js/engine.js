@@ -53,7 +53,8 @@
     var gameSelectTitleInfo = gameSelectTitleInfo();
     var characterSelectSpriteInfo = populateCharacterSelectInfo(characterSelectMenu);
 
-    var score = 0;
+    var score = 0,
+        lives = 5;
 
 
     // define canvas dimensions and append to document body
@@ -307,6 +308,12 @@
             enemyRect = enemy.collisionRect();
             if (player.state === player.State.PLAYING && isCollision(playerRect, enemyRect)) {
                 // collision detected, animate player to initial position
+                if (lives > 0) {
+                    --lives;
+                } else {
+                    lives = 5;
+                    score = 0;
+                }
                 player.state = player.State.RESET;
             }
         });
@@ -419,6 +426,13 @@
     function renderGemCollector(level) {
         renderLayer(level.map, 0, 0);
         renderEntities();
+
+        // render text
+        ctx.font = "54px VT323", ctx.fillStyle = "green", ctx.strokeStyle = "blue", ctx.textAlign = "center";
+        var x = ctx.canvas.width / 2;
+        var y = ctx.canvas.height / 16;
+        ctx.fillText("LIVES: " + lives + "  SCORE: " + score, x, y)
+        ctx.strokeText("LIVES: " + lives + "  SCORE: " + score, x, y);
     }
 
     /* This function is called by the render function and is called on each game
