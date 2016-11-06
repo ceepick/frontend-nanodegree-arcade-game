@@ -567,13 +567,16 @@ var Models = {
 		this.State = {
 			SPAWNED: 0,
 			COLLECTED: 1,
-			DESPAWNED: 2
+			SCORING: 2,
+			DESPAWNED: 3
 		},
 		this.state = this.State.SPAWNED;
 
 		this.lLifespan = 0;
 		this.lInitialTime = null;
 		this.lPercentComplete = null;
+
+		this.lAnimationDuration = 100;
 
 		this.origin = {
 			x: this.blockOffset.x * getRandomInt(0,4),
@@ -586,21 +589,36 @@ var Models = {
 	Models.Gem.prototype = Object.create(Models.Character.prototype);
 
 	Models.Gem.prototype.update = function() {
-				// clear canvas to avoid render behind game board when transitioning from State.WON
-		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-		var now = Date.now();
-		// start animation
-		if (this.lInitialTime === null) {
-			// set initial time and initial position for progress calculations
-			this.lInitialTime = now;
-		} else {
-			this.lPercentComplete = ((now - this.lInitialTime)) / this.lLifespan;
-			// update position on path until duration reached
-			if (this.lPercentComplete > 1) {
-				this.state = this.State.DESPAWNED;
-				// remove
+		// if (this.state === this.State.SPAWNED) {
+			// clear canvas to avoid render behind game board when transitioning from State.WON
+			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+			var now = Date.now();
+			// start animation
+			if (this.lInitialTime === null) {
+				// set initial time and initial position for progress calculations
+				this.lInitialTime = now;
+			} else {
+				if (this.state === this.State.SPAWNED) {
+					this.lPercentComplete = ((now - this.lInitialTime)) / this.lLifespan;
+					// update position on path until duration reached
+					if (this.lPercentComplete > 1) {
+						this.state = this.State.DESPAWNED;
+						// remove
+					}
+				} else if (this.state === this.State.SCORING) {
+					this.lPercentComplete = ((now - this.lInitialTime)) / this.lAnimationDuration;
+					// update position on path until duration reached
+					if (this.lPercentComplete <= 1) {
+						this.origin = getNewPosition(this.origin, {x: this.origin.x, y: this.origin.y - 20}, this.lPercentComplete);
+					} else {
+						this.state = this.State.COLLECTED;
+					}
+				}
 			}
-		}
+	};
+
+	Models.Gem.prototype.resetUpdate = function() {
+		this.lInitialTime = this.lPercentComplete = null;
 	};
 
 	Models.Gem.prototype.render = function() {

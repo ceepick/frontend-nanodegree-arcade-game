@@ -297,8 +297,9 @@
         var gemRect;
         gems.forEach(gem => {
             gemRect = gem.collisionRect();
-            if (isCollision(playerRect, gemRect)) {
-                gem.state = gem.State.COLLECTED;
+            if (gem.state === gem.State.SPAWNED && isCollision(playerRect, gemRect)) {
+                gem.state = gem.State.SCORING;
+                gem.resetUpdate();
                 score += gem.value;
             }
         });
