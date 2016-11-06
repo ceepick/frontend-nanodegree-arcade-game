@@ -576,7 +576,7 @@ var Models = {
 		this.lInitialTime = null;
 		this.lPercentComplete = null;
 
-		this.lAnimationDuration = 100;
+		this.lAnimationDuration = 500;
 
 		this.origin = {
 			x: this.blockOffset.x * getRandomInt(0,4),
@@ -609,7 +609,7 @@ var Models = {
 					this.lPercentComplete = ((now - this.lInitialTime)) / this.lAnimationDuration;
 					// update position on path until duration reached
 					if (this.lPercentComplete <= 1) {
-						this.origin = getNewPosition(this.origin, {x: this.origin.x, y: this.origin.y - 20}, this.lPercentComplete);
+						this.origin = getNewPosition(this.origin, {x: this.origin.x, y: this.origin.y - 7.5}, this.lPercentComplete);
 					} else {
 						this.state = this.State.COLLECTED;
 					}
@@ -624,6 +624,15 @@ var Models = {
 	Models.Gem.prototype.render = function() {
 		var origin = this.origin;
 		ctx.drawImage(Resources.get(this.sprite), origin.x, origin.y);
+
+		if (this.state === this.State.SCORING) {
+			// render text
+	        ctx.font = "54px VT323", ctx.fillStyle = "white", ctx.strokeStyle = "blue", ctx.textAlign = "center";
+	        var x = this.origin.x + this.spriteSize.width / 2;
+	        var y = this.origin.y + this.spriteSize.height / 1.5;
+	        ctx.fillText("+" + this.value, x, y)
+	        ctx.strokeText("+" + this.value, x, y);
+	    }
 	};
 
 	Models.GreenGem = function(characterType) {
