@@ -1,9 +1,9 @@
 /**
-*	Models incapulates the logic to create, update, render, and interact with Character objects.
+*	Models incapulates the logic to create, update, render, and interact with entity objects.
 */
 var Models = {
-	// Enumeration of all character types
-	CharacterType: {
+	// Enumeration of all entity types
+	EntityType: {
 	    BOY: 0,
 	    GIRL_CAT: 1,
 	    GIRL_HORN: 2,
@@ -23,7 +23,7 @@ var Models = {
 
 	// These are duplicated to reduce the load on the menu screen.
 	// I.e. we don't create player objects, just provide enough 
-	// information to render the sprites for character selection.
+	// information to render the sprites for player selection.
 	get SPRITE_WIDTH() {
 		return 101
 	},
@@ -62,38 +62,38 @@ var Models = {
 	/**
 	*	Provides sprite image asset path.
 	*	This function is used in conjunction with resources.js for image caching.
-	*	@param characterType enumeration value
+	*	@param entityType enumeration value
 	* 	@return path of image asset
 	*/
-	function spritePath(characterType, isInvincible) {
+	function spritePath(entityType, isInvincible) {
 		var imagePath;
 		// assignment/breaks chosen over straight returns for convention and future customization if needed
-        switch (characterType) {
-            case Models.CharacterType.BOY:
+        switch (entityType) {
+            case Models.EntityType.BOY:
             	imagePath = isInvincible ? 'images/char-boy-inv.png' : 'images/char-boy.png';
                 break;
-            case Models.CharacterType.GIRL_CAT:
+            case Models.EntityType.GIRL_CAT:
             	imagePath = isInvincible ? 'images/char-cat-girl-inv.png' : 'images/char-cat-girl.png';
                 break;
-            case Models.CharacterType.GIRL_HORN:
+            case Models.EntityType.GIRL_HORN:
             	imagePath = isInvincible ? 'images/char-horn-girl-inv.png' : 'images/char-horn-girl.png';
             	break;
-           	case Models.CharacterType.GIRL_PINK:
+           	case Models.EntityType.GIRL_PINK:
            		imagePath = isInvincible ? 'images/char-pink-girl-inv.png' : 'images/char-pink-girl.png';
            		break;
-           	case Models.CharacterType.GIRL_PRINCESS:
+           	case Models.EntityType.GIRL_PRINCESS:
            		imagePath = isInvincible ? 'images/char-princess-girl-inv.png' : 'images/char-princess-girl.png';
            		break;
-           	case Models.CharacterType.BUG:
+           	case Models.EntityType.BUG:
                 imagePath = 'images/enemy-bug.png';
                 break;
-           	case Models.CharacterType.GEM_GREEN:
+           	case Models.EntityType.GEM_GREEN:
            		imagePath = 'images/gem-green.png';
            		break;
-           	case Models.CharacterType.GEM_BLUE:
+           	case Models.EntityType.GEM_BLUE:
            		imagePath = 'images/gem-blue.png';
            		break;
-           	case Models.CharacterType.GEM_ORANGE:
+           	case Models.EntityType.GEM_ORANGE:
            		imagePath = 'images/gem-orange.png';
            		break;
             default:
@@ -103,7 +103,7 @@ var Models = {
     };
 
     /**
-    *	Determines next position for character animation.
+    *	Determines next position for entity animation.
     *	This function is used when a player loses or wins to animate them back to initial position.
     *	@param initPos initial position for animation
     *	@param endPos final position for animation
@@ -123,13 +123,13 @@ var Models = {
 	*/
 
 	/**
-	*	Character base class. Currently only used to provide sprite.
-	*	@param CharacterType enumeration that signals proper configuration
+	*	Entity base class. Currently only used to provide sprite.
+	*	@param entityType enumeration that signals proper configuration
 	*	@constructor
 	*/
-	Models.Character = function(characterType) {
-		this.characterType = characterType;
-		this.sprite = spritePath(characterType, false);
+	Models.Entity = function(entityType) {
+		this.entityType = entityType;
+		this.sprite = spritePath(entityType, false);
 		this.spriteSize = {width: 101, height: 171};
 		this.spriteOffset = {x: 0, y: -30};
 		this.blockOffset = {x: 101, y: 83};
@@ -137,9 +137,9 @@ var Models = {
 
 	/**
 	*	Returns the rect of the sprite to be used in collision detection.
-	*	@return rect that fits the character dimensions in the sprite rect
+	*	@return rect that fits the entity dimensions in the sprite rect
 	*/
-	Models.Character.prototype.collisionRect = function() {
+	Models.Entity.prototype.collisionRect = function() {
 		return {
 			x: this.origin.x + this.collisionOffset.x, 
 			y: this.origin.y + this.collisionOffset.y,
@@ -153,7 +153,7 @@ var Models = {
 	*	Used to determine if sprite should be rendered.
 	* 	@return true if on canvas, false if off canvas
 	*/
-	Models.Character.prototype.isOnCanvas = function() {
+	Models.Entity.prototype.isOnCanvas = function() {
 		var x = this.origin.x, y = this.origin.y;
 		if ((x > -this.spriteSize.width && x < ctx.canvas.width) && // horizontal bounds
 			(y >= (-30) && y <= ((froggerLevel.map.images.length - 1) * this.blockOffset.y) - 30)) { // vertical bounds
@@ -165,17 +165,17 @@ var Models = {
 
 	/**
 	*	Enemy base object.
-	*	@param characterType enumeration value that signals proper configuration
+	*	@param entityType enumeration value that signals proper configuration
 	*	@constructor
 	*/
-	Models.Enemy = function(characterType) {
-		Models.Character.call(this, characterType);
+	Models.Enemy = function(entityType) {
+		Models.Entity.call(this, entityType);
 
 		this.collisionOffset = {x: 1, y: 77};
 		this.collisionSize = {width: 98, height: 66};
 	    this.velocity = getRandomInt(1,6);
 	};
-	Models.Enemy.prototype = Object.create(Models.Character.prototype);
+	Models.Enemy.prototype = Object.create(Models.Entity.prototype);
 
 	/**
 	*	Update the enemy's position.
@@ -202,11 +202,11 @@ var Models = {
 
 	/**
 	*	Frogger enemy.
-	*	@param characterType enumeration value that signals proper configuration
+	*	@param entityType enumeration value that signals proper configuration
 	* 	@constructor
 	*/
-	Models.FroggerEnemy = function(characterType) {
-		Models.Enemy.call(this, characterType);
+	Models.FroggerEnemy = function(entityType) {
+		Models.Enemy.call(this, entityType);
 
 		Object.defineProperty(this, "initialOrigin", {
 			get: function() {
@@ -222,11 +222,11 @@ var Models = {
 
 	/**
 	*	Collector enemy.
-	*	@param characterType enumeration value that signals proper configuration
+	*	@param entityType enumeration value that signals proper configuration
 	* 	@constructor
 	*/
-	Models.GemCollectorEnemy = function(characterType) {
-		Models.Enemy.call(this, characterType);
+	Models.GemCollectorEnemy = function(entityType) {
+		Models.Enemy.call(this, entityType);
 
 		Object.defineProperty(this, "initialOrigin", {
 			get: function() {
@@ -242,12 +242,12 @@ var Models = {
 
 
 	/**
-	*	Player character base object.
-	*	@param characterType enumeration value that signals proper configuration
+	*	Player entity base object.
+	*	@param entityType enumeration value that signals proper configuration
 	*	@constructor
 	*/
-	Models.Player = function(characterType) {
-		Models.Character.call(this, characterType);
+	Models.Player = function(entityType) {
+		Models.Entity.call(this, entityType);
 
 		this.State = {
 			PLAYING: 0,
@@ -268,7 +268,7 @@ var Models = {
 		this.lPercentComplete = null;
 		this.lInitialPosition = null;
 	};
-	Models.Player.prototype = Object.create(Models.Character.prototype);
+	Models.Player.prototype = Object.create(Models.Entity.prototype);
 
 	/**
 	*	Called to update the model during the level reset animation.
@@ -294,7 +294,7 @@ var Models = {
 					this.state = this.State.PLAYING;
 				} else {
 					this.state = this.State.INVINCIBILITY;
-					this.sprite = spritePath(this.characterType, true);
+					this.sprite = spritePath(this.entityType, true);
 				}
 				this.lInitialTime = this.lPercentComplete = this.lInitialPosition = null;
 				this.origin = this.initialOrigin;
@@ -315,7 +315,7 @@ var Models = {
 			// update position on path until duration reached
 			if (this.lPercentComplete >= 1) {
 				this.state = this.State.PLAYING;
-				this.sprite = spritePath(this.characterType, false);
+				this.sprite = spritePath(this.entityType, false);
 				this.lInitialTime = this.lPercentComplete = this.lInitialPosition = null;
 			}
 		}
@@ -341,7 +341,7 @@ var Models = {
 	};
 
 	/**
-	*	Updates the character model data before a render.
+	*	Updates the player model data before a render.
 	*/
 	Models.Player.prototype.update = function() {
 		if (this.state === this.State.WON) {
@@ -373,8 +373,8 @@ var Models = {
 	*	@return appropriate string or an empty string for an undefined player
 	*/
 	Models.Player.prototype.chatBubbleText = function() {
-		var types = Models.CharacterType;
-		switch (this.characterType) {
+		var types = Models.EntityType;
+		switch (this.entityType) {
 			case types.BOY:
 				return "Bummer";
 			case types.GIRL_CAT:
@@ -391,7 +391,7 @@ var Models = {
 	};
 
 	/**
-	*	Handles keyboard input in order to move character around canvas.
+	*	Handles keyboard input in order to move player around canvas.
 	*	@param keyCode the key pressed
 	*/	
 	Models.Player.prototype.handleInput = function(keyCode) {
@@ -423,12 +423,12 @@ var Models = {
 	};
 
 	/**
-	*	Frogger player character.
-	*	@param characterType enumeration value that signals proper configuration
+	*	Frogger player entity.
+	*	@param entityType enumeration value that signals proper configuration
 	*	@constructor
 	*/	
-	Models.FroggerPlayer = function(characterType) {
-		Models.Player.call(this, characterType);
+	Models.FroggerPlayer = function(entityType) {
+		Models.Player.call(this, entityType);
 
 		Object.defineProperty(this, "initialOrigin", {
 			get: function() {
@@ -492,7 +492,7 @@ var Models = {
 	};
 
 		/**
-	*	Handles keyboard input in order to move character around canvas.
+	*	Handles keyboard input in order to move player around canvas.
 	*	@param keyCode the key pressed
 	*/	
 	Models.FroggerPlayer.prototype.handleInput = function(keyCode) {
@@ -507,12 +507,12 @@ var Models = {
 	};
 
 	/**
-	*	Collector player character.
-	*	@param characterType enumeration value that signals proper configuration
+	*	Collector player entity.
+	*	@param entityType enumeration value that signals proper configuration
 	*	@constructor
 	*/	
-	Models.GemCollectorPlayer = function(characterType) {
-		Models.Player.call(this, characterType);
+	Models.GemCollectorPlayer = function(entityType) {
+		Models.Player.call(this, entityType);
 
 		Object.defineProperty(this, "initialOrigin", {
 			get: function() {
@@ -561,8 +561,8 @@ var Models = {
 		return true;
 	};
 
-	Models.Gem = function(characterType) {
-		Models.Character.call(this, characterType);
+	Models.Gem = function(entityType) {
+		Models.Entity.call(this, entityType);
 
 		this.State = {
 			SPAWNED: 0,
@@ -586,7 +586,7 @@ var Models = {
 		this.collisionOffset = {x: 1, y: 77};
 		this.collisionSize = {width: 98, height: 66};
 	};
-	Models.Gem.prototype = Object.create(Models.Character.prototype);
+	Models.Gem.prototype = Object.create(Models.Entity.prototype);
 
 	Models.Gem.prototype.update = function() {
 		// if (this.state === this.State.SPAWNED) {
@@ -635,22 +635,22 @@ var Models = {
 	    }
 	};
 
-	Models.GreenGem = function(characterType) {
-		Models.Gem.call(this, characterType);
+	Models.GreenGem = function(entityType) {
+		Models.Gem.call(this, entityType);
 		this.lLifespan = getRandomInt(3, 7) * 1000; // 3 - 7s
 		this.value = 1;
 	};
 	Models.GreenGem.prototype = Object.create(Models.Gem.prototype);
 
-	Models.BlueGem = function(characterType) {
-		Models.Gem.call(this, characterType);
+	Models.BlueGem = function(entityType) {
+		Models.Gem.call(this, entityType);
 		this.lLifespan = getRandomInt(2, 5) * 1000; // 3 - 7s
 		this.value = 3;
 	};
 	Models.BlueGem.prototype = Object.create(Models.Gem.prototype);
 
-	Models.OrangeGem = function(characterType) {
-		Models.Gem.call(this, characterType);
+	Models.OrangeGem = function(entityType) {
+		Models.Gem.call(this, entityType);
 		this.lLifespan = getRandomInt(1, 3) * 1000; // 3 - 7s
 		this.value = 5;
 	};

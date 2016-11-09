@@ -166,8 +166,8 @@
     *   @param sprite the character sprite that was selected
     *   @return the character type or undefined if the path is not defined
     */
-    function characterType(sprite) {
-        var type = Models.CharacterType;
+    function entityType(sprite) {
+        var type = Models.EntityType;
         switch (sprite) {
             case 'images/char-boy.png':
                 return type.BOY;
@@ -216,7 +216,7 @@
                 var sprite = chars.images[row][col];
                 if (sprite !== null) {
                     spriteInfos.push({
-                        characterType: characterType(sprite),
+                        entityType: entityType(sprite),
                         collisionRect: {
                             x: col * Models.SPRITE_WIDTH,
                             y: row * Models.SPRITE_Y_OFFSET - Models.SPRITE_Y_INITIAL_POSITION,
@@ -256,13 +256,13 @@
             case State.LEVEL_FROGGER:
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 if (player === null) {
-                    player = new Models.FroggerPlayer(metadata.characterType);
+                    player = new Models.FroggerPlayer(metadata.entityType);
                 }
                 break;
             case State.LEVEL_GEM_COLLECTOR:
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 if (player === null) {
-                    player = new Models.GemCollectorPlayer(metadata.characterType);
+                    player = new Models.GemCollectorPlayer(metadata.entityType);
                 }
                 break;
             default:
@@ -337,11 +337,11 @@
 
         var gem;
         if (rand < 5) {
-            gem = new Models.OrangeGem(Models.CharacterType.GEM_ORANGE);
+            gem = new Models.OrangeGem(Models.EntityType.GEM_ORANGE);
         } else if (rand >= 5 && rand < 20) {
-            gem = new Models.BlueGem(Models.CharacterType.GEM_BLUE);
+            gem = new Models.BlueGem(Models.EntityType.GEM_BLUE);
         } else {
-            gem = new Models.GreenGem(Models.CharacterType.GEM_GREEN);
+            gem = new Models.GreenGem(Models.EntityType.GEM_GREEN);
         }
         gems.push(gem);
     }
@@ -480,13 +480,13 @@
                 if (isCollision(clickRect, gameSelectTitleInfo.froggerHitBox)) {
                     game = Game.FROGGER;
                     for (var i = 0; i < 4; ++i) {
-                        allEnemies.push(new Models.FroggerEnemy(Models.CharacterType.BUG));
+                        allEnemies.push(new Models.FroggerEnemy(Models.EntityType.BUG));
                     }
                 }
                 if (isCollision(clickRect, gameSelectTitleInfo.gemCollectorHitBox)) {
                     game = Game.GEM_COLLECTOR;
                     for (var i = 0; i < 5; ++i) {
-                        allEnemies.push(new Models.GemCollectorEnemy(Models.CharacterType.BUG));
+                        allEnemies.push(new Models.GemCollectorEnemy(Models.EntityType.BUG));
                     }
                 }
 
@@ -499,10 +499,10 @@
                     if (isCollision(clickRect, spriteInfo.collisionRect)) {
                         switch (game) {
                             case Game.FROGGER:
-                                changeState(State.LEVEL_FROGGER, {characterType: spriteInfo.characterType});
+                                changeState(State.LEVEL_FROGGER, {entityType: spriteInfo.entityType});
                                 break;
                             case Game.GEM_COLLECTOR:
-                                changeState(State.LEVEL_GEM_COLLECTOR, {characterType: spriteInfo.characterType});
+                                changeState(State.LEVEL_GEM_COLLECTOR, {entityType: spriteInfo.entityType});
                                 break;
                             default:
                         }

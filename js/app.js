@@ -4,7 +4,7 @@
 
 // Create Enemies and Players
 var allEnemies = []; // dynamic based on level
-var player = null; // user will pick character in menus
+var player = null; // user will pick player in menus
 var gems = [];
 
 /**
@@ -43,7 +43,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Clicks tracked for character selection
+// Clicks tracked for player selection
 document.addEventListener('click', function(e) {
     // Signal engine that click has occured
     Engine.onClick(ctx.canvas, e);
