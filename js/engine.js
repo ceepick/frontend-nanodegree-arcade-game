@@ -5,7 +5,7 @@
  *
  * A game engine works by drawing the entire game screen over and over, kind of
  * like a flipbook you may have created as a kid. When your player moves across
- * the screen, it may look like just that image/character is moving or being
+ * the screen, it may look like just that image/entity is moving or being
  * drawn but that is not the case. What's really happening is the entire "scene"
  * is being drawn over and over, presenting the illusion of animation.
  *
@@ -27,7 +27,7 @@
 
     // Cache menus and levels to prevent redeclaration in rendering loop
     var gameSelectMenu = new Menus.GameSelect(),
-        characterSelectMenu = new Menus.PlayerSelect(),
+        playerSelectMenu = new Menus.PlayerSelect(),
         froggerLevel = new Levels.Frogger(),
         gemCollectorLevel = new Levels.GemCollector();
 
@@ -42,16 +42,16 @@
     // State enum to transition between different screens in the game
     var State = {
         MENU_GAME_SELECT: 0,
-        MENU_CHARACTER_SELECT: 1,
+        MENU_PLAYER_SELECT: 1,
         LEVEL_FROGGER: 2,
         LEVEL_GEM_COLLECTOR: 3
     }
     var state = State.MENU_GAME_SELECT; // initial state
     
-    // This object is used to assist in the selection of a character
+    // This object is used to assist in the selection of a player
     // TODO: Revisit
     var gameSelectTitleInfo = gameSelectTitleInfo();
-    var characterSelectSpriteInfo = populateCharacterSelectInfo(characterSelectMenu);
+    var playerSelectSpriteInfo = populatePlayerSelectInfo(playerSelectMenu);
 
     var score = 0,
         lives = 5;
@@ -83,8 +83,8 @@
             case State.MENU_GAME_SELECT:
                 renderGameSelect(gameSelectMenu);
                 break;
-            case State.MENU_CHARACTER_SELECT:
-                renderCharacterSelect(characterSelectMenu);
+            case State.MENU_PLAYER_SELECT:
+                renderPlayerSelect(playerSelectMenu);
                 break;
             case State.LEVEL_FROGGER:
                 update(dt);
@@ -122,7 +122,7 @@
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
      * you implement your collision detection (when two entities occupy the
-     * same space, for instance when your character should die), you may find
+     * same space, for instance when your player should die), you may find
      * the need to add an additional function call here. For now, we've left
      * it commented out - you may or may not want to implement this
      * functionality this way (you could just implement collision detection
@@ -162,9 +162,9 @@
     }
 
     /**
-    *   Convenience function to determine which character type corresonds to a particular sprite.
-    *   @param sprite the character sprite that was selected
-    *   @return the character type or undefined if the path is not defined
+    *   Convenience function to determine which entity type corresonds to a particular sprite.
+    *   @param sprite the entity sprite that was selected
+    *   @return the entity type or undefined if the path is not defined
     */
     function entityType(sprite) {
         var type = Models.EntityType;
@@ -202,14 +202,14 @@
     }
 
     /**
-    *   Convenience function that generates an array of character sprite info.
-    *   The application caches this information to use for character selection.
-    *   @param characterSelectMenu the content data for the character select menu screen
-    *   @return an object that contains the character type and location information of the sprite
+    *   Convenience function that generates an array of player sprite info.
+    *   The application caches this information to use for player selection.
+    *   @param playerSelectMenu the content data for the player select menu screen
+    *   @return an object that contains the player type and location information of the sprite
     */
-    function populateCharacterSelectInfo(characterSelectMenu) {
+    function populatePlayerSelectInfo(playerSelectMenu) {
         var spriteInfos = [];
-        var chars = characterSelectMenu.players;
+        var chars = playerSelectMenu.players;
         var row, col;
         for (row = 0; row < chars.numRows; ++row) {
             for (col = 0; col < chars.numCols; ++col) {
@@ -251,7 +251,7 @@
         // execute work before state change
         switch (nextState) {
             case State.MENU_GAME_SELECT:
-            case State.MENU_CHARACTER_SELECT:
+            case State.MENU_PLAYER_SELECT:
                 break;
             case State.LEVEL_FROGGER:
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -367,7 +367,7 @@
     }
 
     /**
-    *   This function handles rendering the character select menu.
+    *   This function handles rendering the player select menu.
     *   @param menu the content data for a menu screen
     */
     function renderGameSelect(menu) {
@@ -394,10 +394,10 @@
     }
 
     /**
-    *   This function handles rendering the character select menu.
+    *   This function handles rendering the player select menu.
     *   @param menu the content data for a menu screen
     */
-    function renderCharacterSelect(menu) {
+    function renderPlayerSelect(menu) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         // draw scene
         renderLayer(menu.map, 0, 0);
@@ -464,7 +464,7 @@
     }
 
     /**
-    *   Click event listener function. This function is used for character selection.
+    *   Click event listener function. This function is used for player selection.
     *   @param canvas the canvas the click occured on
     *   @param event the click event
     */
@@ -491,11 +491,11 @@
                 }
 
                 if (game !== Game.UNSELECTED) {
-                    changeState(State.MENU_CHARACTER_SELECT, null);
+                    changeState(State.MENU_PLAYER_SELECT, null);
                 }
                 break;
-            case State.MENU_CHARACTER_SELECT:
-                characterSelectSpriteInfo.forEach(spriteInfo => {
+            case State.MENU_PLAYER_SELECT:
+                playerSelectSpriteInfo.forEach(spriteInfo => {
                     if (isCollision(clickRect, spriteInfo.collisionRect)) {
                         switch (game) {
                             case Game.FROGGER:

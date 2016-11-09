@@ -64,7 +64,7 @@ var Menus = {
 		};
 
         _ = Menus.PlayerSpriteUrl;
-        this.models = {
+        this.players = {
         	images: [
         		[_._, _._, _._, _._, _._],
 	        	[_._, _._, _._, _._, _._],
