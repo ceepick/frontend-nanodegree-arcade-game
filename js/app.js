@@ -2,49 +2,58 @@
 *   INITIALIZATION
 */
 
-// Create Enemies and Players
+// Create Enemies, Players, and Gems global objects
 var allEnemies = []; // dynamic based on level
 var player = null; // user will pick player in menus
-var gems = [];
+var gems = []; // generated when gem collector level loads
+
+var allowedKeys = {
+    37: 'left',
+    38: 'up',
+    39: 'right',
+    40: 'down'
+};
 
 /**
 *   EVENT LISTENERS
 */
 
-// Listen for user input and call to handle player movement
+/**
+*   Listens for keyup events to handle player movmement.
+*   This method is used for the Frogger game.
+*   @param keyup the keyup event
+*   @param function(e) the event handling function
+*/
 document.addEventListener('keyup', function(e) {
-    var allowedKeys = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
-    };
-
-    // only call handleInput if a player has been selected
-    if (player !== null && player.state === player.State.PLAYING && Engine.currentGame() === Engine.Game.FROGGER) {
+    if (player !== null // player must be selected before accepting movement
+        && player.state === player.State.PLAYING 
+        && Engine.currentGame() === Engine.Game.FROGGER) {
+        // signal model object keyup has occured
         player.handleInput(allowedKeys[e.keyCode]);
     }
 });
 
-// Listen for user input and call to handle player movement
+/**
+*   Listens for keydown events to handle player movmement.
+*   This method is used for the Gem Collector game.
+*   @param keydown the keydown event
+*   @param function(e) the event handling function
+*/
 document.addEventListener('keydown', function(e) {
-    var allowedKeys = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
-    };
-
-    // only call handleInput if a player has been selected
-    if (player !== null 
+    if (player !== null // player must be selected before accepting movement
         && (player.state === player.State.PLAYING || player.state === player.State.INVINCIBILITY) 
         && Engine.currentGame() === Engine.Game.GEM_COLLECTOR) {
+        // signal model object keydown has occured
         player.handleInput(allowedKeys[e.keyCode]);
     }
 });
 
-// Clicks tracked for player selection
+/**
+*   Listens for click events to handle player selection.
+*   @param click the click event
+*   @param function(e) the event handling function
+*/
 document.addEventListener('click', function(e) {
-    // Signal engine that click has occured
+    // signal engine that click has occured
     Engine.onClick(ctx.canvas, e);
 });

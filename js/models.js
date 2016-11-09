@@ -39,7 +39,7 @@ var Models = {
 };
 
 (function () {
-    // For collision detection
+    // For tile collision detection
     var froggerLevel = new Levels.Frogger();
 
 	/**
@@ -137,6 +137,7 @@ var Models = {
 
 	/**
 	*	Returns the rect of the sprite to be used in collision detection.
+	*	collisionOffset and collisionSize objects must be created by sub-objects
 	*	@return rect that fits the entity dimensions in the sprite rect
 	*/
 	Models.Entity.prototype.collisionRect = function() {
