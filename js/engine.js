@@ -12,7 +12,7 @@
 
 (function(global) {
     /**
-    *   Private variables
+    *   PRIVATE VARIABLES
     */
 
     // Predefine the variables we'll be using within this scope,
@@ -59,6 +59,10 @@
     // Variables used to track the player's score and remaining lives    
     var score = 0,
         lives = 5;
+
+    /**
+    *   PRIVATE FUNCTIONS
+    */
 
     /**
     *   Rendering loop function.
@@ -317,9 +321,7 @@
     *   Max number of gems on screen is 4. 1% chance of spawn per call.
     */
     function shouldSpawnGem() {
-        var min = Math.ceil(0);
-        var max = Math.floor(100);
-        var rand = Math.floor(Math.random() * (max - min + 1)) + min;
+        var rand = getRandomInt(0, 100);
         return (rand < 1 && gems.length < 4) ? true : false;
     }
 
@@ -328,10 +330,7 @@
     *   5% chance of orange gem, 15% chance of blue gem, 80% chance of green gem.
     */
     function spawnGem() {
-        var min = Math.ceil(0);
-        var max = Math.floor(100);
-        var rand = Math.floor(Math.random() * (max - min + 1)) + min;
-
+        var rand = getRandomInt(0, 100);
         var gem;
         if (rand < 5) {
             gem = new Models.OrangeGem(Models.EntityType.GEM_ORANGE);
@@ -542,4 +541,4 @@
         currentGame: currentGame,
         Game: Game
     };
-})(this);
+})(this); // pass global ctx

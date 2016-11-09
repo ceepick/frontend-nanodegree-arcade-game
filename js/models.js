@@ -39,25 +39,16 @@ var Models = {
 };
 
 (function () {
-    // For tile collision detection
+	/**
+	*	PRIVATE VARIABLES
+	*/
+
+    // Used for tile collision detection
     var froggerLevel = new Levels.Frogger();
 
 	/**
 	*	PRIVATE UTILS
 	*/
-
-	/**
-	*	Generates random integer in min/max range inclusive.
-	*	Used for variation in enemy initial position and velocity.
-	*	@param min inclusive min value
-	*	@param max inclusive max value
-	* 	@return random integer value
-	*/
-	function getRandomInt(min, max) {
-	    min = Math.ceil(min);
-	    max = Math.floor(max);
-	    return Math.floor(Math.random() * (max - min + 1)) + min;
-	};
 
 	/**
 	*	Provides sprite image asset path.
@@ -67,7 +58,7 @@ var Models = {
 	*/
 	function spritePath(entityType, isInvincible) {
 		var imagePath;
-		// assignment/breaks chosen over straight returns for convention and future customization if needed
+		// assignment/break statements chosen over straight returns for convention and future customization if needed
         switch (entityType) {
             case Models.EntityType.BOY:
             	imagePath = isInvincible ? 'images/char-boy-inv.png' : 'images/char-boy.png';
@@ -212,7 +203,7 @@ var Models = {
 		Object.defineProperty(this, "initialOrigin", {
 			get: function() {
 				var x = -this.blockOffset.x; // offscreen 1 grid position
-				var y = this.spriteOffset.y + (this.blockOffset.y * getRandomInt(1, 3));
+				var y = this.spriteOffset.y + (this.blockOffset.y * getRandomInt(1, 3)); // one of the block rows
 				return {x, y};
 			}
 		});
@@ -222,7 +213,7 @@ var Models = {
 	Models.FroggerEnemy.prototype = Object.create(Models.Enemy.prototype);
 
 	/**
-	*	Collector enemy.
+	*	Gem Collector enemy.
 	*	@param entityType enumeration value that signals proper configuration
 	* 	@constructor
 	*/
@@ -295,7 +286,7 @@ var Models = {
 					this.state = this.State.PLAYING;
 				} else {
 					this.state = this.State.INVINCIBILITY;
-					this.sprite = spritePath(this.entityType, true);
+					this.sprite = spritePath(this.entityType, true); // invincible sprite
 				}
 				this.lInitialTime = this.lPercentComplete = this.lInitialPosition = null;
 				this.origin = this.initialOrigin;
@@ -304,10 +295,9 @@ var Models = {
 	};
 
 	Models.Player.prototype.updateInvincibility = function() {
-		// clear canvas to avoid render behind game board when transitioning from State.WON
+		// clear canvas to avoid render behind game board
 		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 		var now = Date.now();
-		// start animation
 		if (this.lInitialTime === null) {
 			// set initial time and initial position for progress calculations
 			this.lInitialTime = now;
@@ -346,6 +336,7 @@ var Models = {
 	*/
 	Models.Player.prototype.update = function() {
 		if (this.state === this.State.WON) {
+			// update font for chat bubble
 			ctx.font = "20px VT323", ctx.fillStyle = "black", ctx.textAlign = "center";
 		}
 		// Animate player back to start upon collision
@@ -359,7 +350,7 @@ var Models = {
 	};
 
 	/**
-	*	Returns the "indices" of the player ont he gameboard.
+	*	Returns the "indices" of the player on the gameboard.
 	* 	This method is used to help validate moves.
 	*/
 	Models.Player.prototype.mapLocationIndices = function() {
@@ -562,6 +553,11 @@ var Models = {
 		return true;
 	};
 
+	/**
+	*	Gem entity.
+	*	@param entityType enumeration value that signals proper configuration
+	*	@constructor
+	*/
 	Models.Gem = function(entityType) {
 		Models.Entity.call(this, entityType);
 
@@ -579,7 +575,7 @@ var Models = {
 
 		this.lAnimationDuration = 500;
 
-		this.origin = {
+		this.origin = { // any square on the board
 			x: this.blockOffset.x * getRandomInt(0,4),
 			y: this.spriteOffset.y + (this.blockOffset.y * getRandomInt(0,5))
 		};
@@ -589,45 +585,50 @@ var Models = {
 	};
 	Models.Gem.prototype = Object.create(Models.Entity.prototype);
 
+	/**
+	*	Updates the gem model data before a render.
+	*/
 	Models.Gem.prototype.update = function() {
-		// if (this.state === this.State.SPAWNED) {
-			// clear canvas to avoid render behind game board when transitioning from State.WON
-			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-			var now = Date.now();
-			// start animation
-			if (this.lInitialTime === null) {
-				// set initial time and initial position for progress calculations
-				this.lInitialTime = now;
-			} else {
-				if (this.state === this.State.SPAWNED) {
-					this.lPercentComplete = ((now - this.lInitialTime)) / this.lLifespan;
-					// update position on path until duration reached
-					if (this.lPercentComplete > 1) {
-						this.state = this.State.DESPAWNED;
-						// remove
-					}
-				} else if (this.state === this.State.SCORING) {
-					this.lPercentComplete = ((now - this.lInitialTime)) / this.lAnimationDuration;
-					// update position on path until duration reached
-					if (this.lPercentComplete <= 1) {
-						this.origin = getNewPosition(this.origin, {x: this.origin.x, y: this.origin.y - 7.5}, this.lPercentComplete);
-					} else {
-						this.state = this.State.COLLECTED;
-					}
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		var now = Date.now();
+		if (this.lInitialTime === null) {
+			// set initial time and initial position for progress calculations
+			this.lInitialTime = now;
+		} else {
+			if (this.state === this.State.SPAWNED) {
+				this.lPercentComplete = ((now - this.lInitialTime)) / this.lLifespan;
+				// despawn when duration reached
+				if (this.lPercentComplete > 1) {
+					this.state = this.State.DESPAWNED;
+				}
+			} else if (this.state === this.State.SCORING) {
+				this.lPercentComplete = ((now - this.lInitialTime)) / this.lAnimationDuration;
+				// update gem position until duration reached
+				if (this.lPercentComplete <= 1) {
+					this.origin = getNewPosition(this.origin, {x: this.origin.x, y: this.origin.y - 7.5}, this.lPercentComplete);
+				} else {
+					this.state = this.State.COLLECTED;
 				}
 			}
+		}
 	};
 
+	/**
+	*	Resets values associated with animations and state durations.
+	*/
 	Models.Gem.prototype.resetUpdate = function() {
 		this.lInitialTime = this.lPercentComplete = null;
 	};
 
+	/**
+	*	Renders the gem sprite on the canvas.
+	*/
 	Models.Gem.prototype.render = function() {
 		var origin = this.origin;
 		ctx.drawImage(Resources.get(this.sprite), origin.x, origin.y);
 
 		if (this.state === this.State.SCORING) {
-			// render text
+			// render text of points earned on top of gem
 	        ctx.font = "54px VT323", ctx.fillStyle = "white", ctx.strokeStyle = "blue", ctx.textAlign = "center";
 	        var x = this.origin.x + this.spriteSize.width / 2;
 	        var y = this.origin.y + this.spriteSize.height / 1.5;
@@ -636,6 +637,12 @@ var Models = {
 	    }
 	};
 
+	/**
+	*	Green gem entity.
+	*	Lives for 3 - 7 seconds and is worth 1 point.
+	*	@param entityType enumeration value that signals proper configuration
+	*	@constructor
+	*/
 	Models.GreenGem = function(entityType) {
 		Models.Gem.call(this, entityType);
 		this.lLifespan = getRandomInt(3, 7) * 1000; // 3 - 7s
@@ -643,17 +650,29 @@ var Models = {
 	};
 	Models.GreenGem.prototype = Object.create(Models.Gem.prototype);
 
+	/**
+	*	Green gem entity.
+	*	Lives for 2 - 5 seconds and is worth 3 points.
+	*	@param entityType enumeration value that signals proper configuration
+	*	@constructor
+	*/
 	Models.BlueGem = function(entityType) {
 		Models.Gem.call(this, entityType);
-		this.lLifespan = getRandomInt(2, 5) * 1000; // 3 - 7s
+		this.lLifespan = getRandomInt(2, 5) * 1000; // 2 - 5s
 		this.value = 3;
 	};
 	Models.BlueGem.prototype = Object.create(Models.Gem.prototype);
 
+	/**
+	*	Green gem entity.
+	*	Lives for 1 - 3 seconds and is worth 10 points.
+	*	@param entityType enumeration value that signals proper configuration
+	*	@constructor
+	*/
 	Models.OrangeGem = function(entityType) {
 		Models.Gem.call(this, entityType);
-		this.lLifespan = getRandomInt(1, 3) * 1000; // 3 - 7s
-		this.value = 5;
+		this.lLifespan = getRandomInt(1, 3) * 1000; // 1 - 3s
+		this.value = 10;
 	};
 	Models.OrangeGem.prototype = Object.create(Models.Gem.prototype);
 })();

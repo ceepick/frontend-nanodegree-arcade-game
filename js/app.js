@@ -15,6 +15,23 @@ var allowedKeys = {
 };
 
 /**
+*   GLOBAL UTILS
+*/
+
+/**
+*   Generates random integer in min/max range inclusive.
+*   Used for variation in enemy initial position and velocity.
+*   @param min inclusive min value
+*   @param max inclusive max value
+*   @return random integer value
+*/
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+/**
 *   EVENT LISTENERS
 */
 
