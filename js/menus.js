@@ -8,7 +8,7 @@ var Menus = {
 		G: 'images/block-grass.png',
 		_: null
 	},
-	CharacterSpriteUrl: {
+	PlayerSpriteUrl: {
 		B: 'images/char-boy.png',
 		C: 'images/char-cat-girl.png',
 		H: 'images/char-horn-girl.png',
@@ -45,10 +45,10 @@ var Menus = {
 	};	
 
 	/**
-	*	Map and Character Sprites for the Character Select menu.
+	*	Map and Player Sprites for the Player Select menu.
 	*	@constructor
 	*/
-	Menus.CharacterSelect = function() {
+	Menus.PlayerSelect = function() {
 		var _ = Menus.MapSpriteUrl;
 		this.map = {
 			images: [
@@ -63,8 +63,8 @@ var Menus = {
 			numCols: 5
 		};
 
-        _ = Menus.CharacterSpriteUrl;
-        this.characters = {
+        _ = Menus.PlayerSpriteUrl;
+        this.models = {
         	images: [
         		[_._, _._, _._, _._, _._],
 	        	[_._, _._, _._, _._, _._],

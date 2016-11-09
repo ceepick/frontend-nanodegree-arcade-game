@@ -27,7 +27,7 @@
 
     // Cache menus and levels to prevent redeclaration in rendering loop
     var gameSelectMenu = new Menus.GameSelect(),
-        characterSelectMenu = new Menus.CharacterSelect(),
+        characterSelectMenu = new Menus.PlayerSelect(),
         froggerLevel = new Levels.Frogger(),
         gemCollectorLevel = new Levels.GemCollector();
 
@@ -209,7 +209,7 @@
     */
     function populateCharacterSelectInfo(characterSelectMenu) {
         var spriteInfos = [];
-        var chars = characterSelectMenu.characters;
+        var chars = characterSelectMenu.players;
         var row, col;
         for (row = 0; row < chars.numRows; ++row) {
             for (col = 0; col < chars.numCols; ++col) {
@@ -401,7 +401,7 @@
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         // draw scene
         renderLayer(menu.map, 0, 0);
-        renderLayer(menu.characters, 0, Models.SPRITE_Y_INITIAL_POSITION);
+        renderLayer(menu.players, 0, Models.SPRITE_Y_INITIAL_POSITION);
 
         // render text
         ctx.font = "54px VT323", ctx.fillStyle = "green", ctx.strokeStyle = "blue", ctx.textAlign = "center";
