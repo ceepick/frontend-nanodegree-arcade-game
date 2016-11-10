@@ -25,16 +25,16 @@ var Models = {
 	// I.e. we don't create player objects, just provide enough 
 	// information to render the sprites for player selection.
 	get SPRITE_WIDTH() {
-		return 101
+		return 101;
 	},
 	get SPRITE_Y_INITIAL_POSITION() {
-		return -30
+		return -30;
 	},
 	get SPRITE_Y_OFFSET() {
-		return 83
+		return 83;
 	},
 	get PLAYER_SPRITE_COLLISION_HEIGHT() {
-		return 76
+		return 76;
 	}
 };
 
@@ -91,7 +91,7 @@ var Models = {
                 imagePath = undefined;
         }
         return imagePath;
-    };
+    }
 
     /**
     *	Determines next position for entity animation.
@@ -106,7 +106,7 @@ var Models = {
     	return {
     		x: initPos.x + (dx * percent),
     		y: initPos.y + (dy * percent)
-    	}
+    	};
     }
 
 	/**
@@ -137,7 +137,7 @@ var Models = {
 			y: this.origin.y + this.collisionOffset.y,
 			width: this.collisionSize.width,
 			height: this.collisionSize.height
-		}
+		};
 	};
 
 	/**
@@ -357,7 +357,7 @@ var Models = {
 		return {
 			x: this.origin.x/this.blockOffset.x,
 			y: (this.origin.y + 30)/this.blockOffset.y
-		}
+		};
 	};
 
 	/**
@@ -390,8 +390,7 @@ var Models = {
 		var state = Engine.currentState();
 		var _ = Engine.State; // enum
 		if (state === _.LEVEL_FROGGER || state === _.LEVEL_GEM_COLLECTOR) {
-			if ((this.state === this.State.PLAYING || this.state === this.State.INVINCIBILITY) 
-				&& this.isValidMove(keyCode)) {
+			if ((this.state === this.State.PLAYING || this.state === this.State.INVINCIBILITY) && this.isValidMove(keyCode)) {
 				var origin = this.origin;
 				var blockOffset = this.blockOffset;
 		        switch (keyCode) {
@@ -629,10 +628,13 @@ var Models = {
 
 		if (this.state === this.State.SCORING) {
 			// render text of points earned on top of gem
-	        ctx.font = "54px VT323", ctx.fillStyle = "white", ctx.strokeStyle = "blue", ctx.textAlign = "center";
+	        ctx.font = "54px VT323"; 
+	        ctx.fillStyle = "white";
+	        ctx.strokeStyle = "blue";
+	        ctx.textAlign = "center";
 	        var x = this.origin.x + this.spriteSize.width / 2;
 	        var y = this.origin.y + this.spriteSize.height / 1.5;
-	        ctx.fillText("+" + this.value, x, y)
+	        ctx.fillText("+" + this.value, x, y);
 	        ctx.strokeText("+" + this.value, x, y);
 	    }
 	};

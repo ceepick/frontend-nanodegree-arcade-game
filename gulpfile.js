@@ -25,6 +25,13 @@ gulp.task('minicat', function() {
         .pipe(gulp.dest('dist'));
 });
 
+gulp.task('cat', function() {
+    return gulp.src(['js/resources.js', 'js/menus.js', 'js/levels.js', 'js/models.js', 'js/app.js', 'js/engine.js'])
+        .pipe(gp_concat('concat.js'))
+        .pipe(gulp.dest('dist'))
+        .pipe(gp_rename('app.cat.js'));
+});
+
 // Remove all files from dist directory
 gulp.task('clean-dist-concat', function() {
     return del([

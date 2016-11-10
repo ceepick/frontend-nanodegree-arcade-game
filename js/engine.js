@@ -40,7 +40,7 @@
         FROGGER: 0,
         GEM_COLLECTOR: 1,
         UNSELECTED: 2
-    }
+    };
     var game = Game.UNSELECTED; // initial state
 
     // State enum to transition between different screens in the game
@@ -49,11 +49,11 @@
         MENU_PLAYER_SELECT: 1,
         LEVEL_FROGGER: 2,
         LEVEL_GEM_COLLECTOR: 3
-    }
+    };
     var state = State.MENU_GAME_SELECT; // initial state
     
     // This object is used to assist in the selection of a player
-    var gameSelectTitleInfo = gameSelectTitleInfo();
+    var gameSelectTitleInfo = populateGameSelectTitleInfo();
     var playerSelectSpriteInfo = populatePlayerSelectInfo(playerSelectMenu);
 
     // Variables used to track the player's score and remaining lives    
@@ -175,7 +175,7 @@
     *   Convenience function that returns the game title hit boxes for game selection.
     *   @return frogger and gem collector title hit boxes for collision detection
     */
-    function gameSelectTitleInfo() {
+    function populateGameSelectTitleInfo() {
         return {
             froggerHitBox: {
                 x: Models.SPRITE_WIDTH,
@@ -189,7 +189,7 @@
                 width: Models.SPRITE_WIDTH * 3,
                 height: Models.SPRITE_Y_OFFSET
             }   
-        }
+        };
     }
 
     /**

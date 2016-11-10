@@ -29,7 +29,7 @@ function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+}
 
 /**
 *   EVENT LISTENERS
@@ -42,9 +42,9 @@ function getRandomInt(min, max) {
 *   @param function(e) the event handling function
 */
 document.addEventListener('keyup', function(e) {
-    if (player !== null // player must be selected before accepting movement
-        && player.state === player.State.PLAYING 
-        && Engine.currentGame() === Engine.Game.FROGGER) {
+    if (player !== null && // player must be selected before accepting movement
+        player.state === player.State.PLAYING &&
+        Engine.currentGame() === Engine.Game.FROGGER) {
         // signal model object keyup has occured
         player.handleInput(allowedKeys[e.keyCode]);
     }
@@ -57,9 +57,9 @@ document.addEventListener('keyup', function(e) {
 *   @param function(e) the event handling function
 */
 document.addEventListener('keydown', function(e) {
-    if (player !== null // player must be selected before accepting movement
-        && (player.state === player.State.PLAYING || player.state === player.State.INVINCIBILITY) 
-        && Engine.currentGame() === Engine.Game.GEM_COLLECTOR) {
+    if (player !== null && // player must be selected before accepting movement
+       (player.state === player.State.PLAYING || player.state === player.State.INVINCIBILITY) &&
+        Engine.currentGame() === Engine.Game.GEM_COLLECTOR) {
         // signal model object keydown has occured
         player.handleInput(allowedKeys[e.keyCode]);
     }
