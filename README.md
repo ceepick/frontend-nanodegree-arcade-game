@@ -24,6 +24,11 @@ My version includes the _Frogger_ clone with some customization as well as an or
 
 ## Gameplay
 
+### Common
+
+* To restart the game, reload the page in your browser.
+* Tested in Chrome, Firefox, and Safari. Please let me know if you have issues!
+
 ### Frogger Clone
 
 As with the old game, the purpose is to reach the far side of the game board while avoiding enemies. In this game, you must reach the stone tile! Each character will provide a unique quip upon completion.
@@ -37,6 +42,7 @@ The purpose of his game is to collect gems while avoiding enemies. You have 5 li
 * Use the arrow keys [left, right, up, down] to move the character between tiles.
 * Green gems are worth 1 pt, blue gems ar worth 3 pts, and orange gems are worth 10 pts.
 * After a death, you are invulnerable for 3 seconds and still allowed to move around the board and collect gems.
+* After all lives have been lost, your score and lives are reset.
 
 ## Developer Stuff
 

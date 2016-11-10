@@ -466,7 +466,7 @@
                 // player chooses frogger game
                 if (isCollision(clickRect, gameSelectTitleInfo.froggerHitBox)) {
                     game = Game.FROGGER;
-                    for (var i = 0; i < 4; ++i) {
+                    for (var i = 0; i < 6; ++i) {
                         allEnemies.push(new Models.FroggerEnemy(Models.EntityType.BUG));
                     }
                 }
