@@ -40,7 +40,7 @@ As with the old game, the purpose is to reach the far side of the game board whi
 The purpose of his game is to collect gems while avoiding enemies. You have 5 lives so be careful!
 
 * Use the arrow keys [left, right, up, down] to move the character between tiles.
-* Green gems are worth 1 pt, blue gems ar worth 3 pts, and orange gems are worth 10 pts.
+* Green gems are worth 1 pt, blue gems are worth 3 pts, and orange gems are worth 10 pts.
 * After a death, you are invulnerable for 3 seconds and still allowed to move around the board and collect gems.
 * After all lives have been lost, your score and lives are reset.
 
